@@ -7,4 +7,4 @@ Many *tools* currently exist, but most of them perform dangerous transformations
 With *this tool*, we aim to minimize the possibility of code breakage by step-by-step performing individual tasks
 such as *safely separating scopes* and *expanding string tables* and more.
 
-Additionally, we offer various other useful tools. Everything is written in this README.
+Additionally, we offer various other useful tools. Everything is written in this [README](README.md).
