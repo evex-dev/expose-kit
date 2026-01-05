@@ -57,7 +57,11 @@ When long-running execution is expected, the timeout can be disabled with `--unl
 
 #### `expose parsable`
 
-Description: `Check if the file is parsable`
+Check if the file is parsable  
+```js
+parsable:     const x = 810;
+not parsable: cons x; = 810;
+```
 
 Example:
 ```bash
@@ -69,12 +73,13 @@ args:
 - `--input, --file <file>`: The file to check
 - `--unlimited`: Unlimited timeout (default: 30s)
 
-`const x = 810;`: valid
-`cons x; = 810;`: invalid
-
 #### `expose scope-safe`
 
-Description: `Rename bindings per scope for safer transforms`
+Rename bindings per scope for safer transforms  
+```js
+Before: var x = 810;((x) => console.log(x))(114514);
+After: var x = 810;((_x) => console.log(_x))(114514);
+```
 
 Example:
 ```bash
