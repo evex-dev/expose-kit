@@ -9,12 +9,12 @@
 ---
 
 ## Concept
-JavaScript deobfuscation tools are everywhere.  
+JavaScript deobfuscation tools are *everywhere*.  
 But many of them are **too aggressive**, rewriting code until it breaks.  
 
 <img width="654" height="24" alt="image" src="https://github.com/user-attachments/assets/fd11d250-0163-4cd2-b36c-5514137fe087" />
 
-Expose Kit takes a different path.
+Expose Kit takes *a different path*.
 
 Instead of brute force, it works **step by step**.
 
