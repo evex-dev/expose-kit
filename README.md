@@ -153,6 +153,28 @@ Args:
 
 ---
 
+### `expose expand-array`
+
+Expand array index access for primitive values.
+
+```bash
+expose expand-array path/to/file.js --target arrayName --output path/to/file.expand-array.js
+```
+
+Args:
+- `--target <name>`  
+  Target array variable name
+- `--o, --output <file>`  
+  Output file path  
+  - No extension → `file.expand-array.js`
+  - With extension → `file.expand-array.<ext>`
+
+Notes:
+- Each replacement is validated by reparsing; invalid replacements (e.g. `++a[0]` or `a[0]++`) are skipped.-
+- Please carefully confirm that the original array has not undergone operations such as shuffling and is fixed.
+
+---
+
 ## Community & Support
 
 - Missing a feature? → [Create an issue](https://github.com/EdamAme-x/expose-kit/issues)
