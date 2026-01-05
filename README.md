@@ -52,7 +52,7 @@ Options such as `--output` are also available.
 
 If no options are provided, this tool will prompt you for the required values.  
 
-To avoid memory leaks and hung processes, a reasonable timeout is set by default.
+To avoid memory leaks and hung processes, a reasonable timeout is set by default.  
 When long-running execution is expected, the timeout can be disabled with `--unlimited`.
 
 ### Commands
