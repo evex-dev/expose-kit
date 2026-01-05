@@ -8,15 +8,21 @@
 ##### <center>❓ Question: Join our [Discord community](https://evex.land)</center>
 ---
 
-## Concepts
-Many *tools* currently exist, but most of them perform dangerous transformations and **break the code**.  
+## Concept
+JavaScript deobfuscation tools are everywhere.  
+But many of them are **too aggressive**, rewriting code until it breaks.
 
-<img width="654" height="24" alt="image" src="https://github.com/user-attachments/assets/fd11d250-0163-4cd2-b36c-5514137fe087" />
+Expose Kit takes a different path.
 
-With *this tool*, we aim to minimize the possibility of code breakage by step-by-step performing individual tasks
-such as *safely separating scopes* and *expanding string tables* and more.
+Instead of brute force, it works **step by step**:
+- safely isolating scopes  
+- gently expanding string tables  
+- transforming only what *should* be transformed  
 
-Additionally, we offer various other useful tools. Everything is written in this [README](README.md).
+The goal is simple: **clarity without destruction**.
+
+Alongside deobfuscation, Expose Kit includes a collection of practical utilities.  
+Everything you need is documented right here in this [README](README.md).
 
 ## Installation
 *Just one step*  
