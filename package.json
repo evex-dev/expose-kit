@@ -20,7 +20,7 @@
     "format:fix": "biome format --write **/*.ts",
     "lint": "biome lint **/*.ts",
     "lint:fix": "biome lint --write **/*.ts",
-    "copy": "bun run ./utils/common/cp.ts package.json dist/package.json",
+    "copy": "bun run utils/common/cp.ts package.json dist/package.json",
     "build": "tsup",
     "postbuild": "publint",
     "prepublishOnly": "bun copy",
