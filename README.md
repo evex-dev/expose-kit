@@ -21,8 +21,6 @@ Expose Kit takes *a different path*.
 
 Instead of brute force, it works **step by step**.
 
-The goal is simple: **safe and universal toolkit**.
-
 Alongside deobfuscation, Expose Kit includes a collection of practical utilities.    
 
 Everything you need is documented right here in this [README](README.md).
