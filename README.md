@@ -73,7 +73,7 @@ args:
 - `[file]`: The file to check
 - `--input, --file <file>`: The file to check
 - `--unlimited`: Unlimited timeout (default: 30s)
-
+---
 #### `expose scope-safe`
 
 Rename bindings per scope for safer transforms  
