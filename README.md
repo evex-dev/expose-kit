@@ -16,12 +16,9 @@ But many of them are **too aggressive**, rewriting code until it breaks.
 
 Expose Kit takes a different path.
 
-Instead of brute force, it works **step by step**:
-- safely isolating scopes  
-- gently expanding string tables  
-- transforming only what *should* be transformed  
+Instead of brute force, it works **step by step**.
 
-The goal is simple: **clarity without destruction**.
+The goal is simple: **safe and universal toolkit**.
 
 Alongside deobfuscation, Expose Kit includes a collection of practical utilities.  
 Everything you need is documented right here in this [README](README.md).
