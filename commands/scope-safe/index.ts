@@ -68,7 +68,7 @@ export default createCommand((program) => {
 						const filename =
 							fileArgument ??
 							options.file ??
-							createPrompt("Enter the file path:");
+							await createPrompt("Enter the file path:");
 
 						if (!filename) {
 							showError("No file provided");
@@ -80,7 +80,7 @@ export default createCommand((program) => {
                             const defaultOutputPath = createDefaultOutputPath(filename);
 							let outputPath =
 								options.output ??
-								(createPrompt(
+								(await createPrompt(
 									"Enter the output file path:",
 								) || "").trim() ?? defaultOutputPath;
 							const loader = loading("Renaming variables by scope...").start();

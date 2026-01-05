@@ -22,7 +22,7 @@ export default createCommand((program) => {
 						const filename =
 							fileArgument ??
 							options.file ??
-							createPrompt("Enter the file path:");
+							await createPrompt("Enter the file path:");
 
 						if (!filename) {
 							showError("No file provided");
