@@ -85,7 +85,7 @@ If you try to write your own deobfuscation logic (e.g. in Python), you’ll quic
 That’s why you should **always start with**:
 
 ```bash
-expose scope-safe input.js
+expose safe-scope input.js
 ```
 
 This renames bindings per scope, producing code like:
@@ -104,7 +104,7 @@ With this alone:
 
 ### 3. Apply transforms step by step
 
-After `scope-safe`, combine common techniques like:
+After `safe-scope`, combine common techniques like:
 - `expand-array` and more
 - legacy obfuscator-specific commands
 
@@ -136,19 +136,19 @@ Args:
 
 ---
 
-### `expose scope-safe`
+### `expose safe-scope`
 
 Rename bindings per scope for safer transformations.
 
 ```bash
-expose scope-safe path/to/file.js --output path/to/file.scope-safe.js
+expose safe-scope path/to/file.js --output path/to/file.safe-scope.js
 ```
 
 Args:
 - `--o, --output <file>`  
   Output file path  
-  - No extension → `file.scope-safe.js`
-  - With extension → `file.scope-safe.<ext>`
+  - No extension → `file.safe-scope.js`
+  - With extension → `file.safe-scope.<ext>`
 
 ---
 

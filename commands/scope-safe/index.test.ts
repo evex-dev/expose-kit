@@ -1,15 +1,15 @@
 import { Command } from "commander";
 import { describe, it, expect, vi, beforeEach, afterEach } from "bun:test";
-import scopeSafe from ".";
+import safeScope from ".";
 import { join } from "node:path";
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
 
 const sampleMockFileAbsolutePath = join(__dirname, "mocks", "sample.js");
-const sampleScopeSafeAbsolutePath = join(
+const sampleSafeScopeAbsolutePath = join(
 	__dirname,
 	"mocks",
-	"sample.scope-safe.js",
+	"sample.safe-scope.js",
 );
 
 const runScript = (filePath: string) => {
@@ -54,20 +54,20 @@ describe("Scope Safe Command", () => {
 	});
 
 	it("Should preserve execution output when regenerated", async () => {
-		scopeSafe(program);
+		safeScope(program);
 
 		await program.parseAsync([
 			"_",
 			"_",
-			"scope-safe",
+			"safe-scope",
 			sampleMockFileAbsolutePath,
 			"--output",
-			sampleScopeSafeAbsolutePath,
+			sampleSafeScopeAbsolutePath,
 			"--unlimited",
 		]);
 
 		const originalResult = runScript(sampleMockFileAbsolutePath);
-		const transformedResult = runScript(sampleScopeSafeAbsolutePath);
+		const transformedResult = runScript(sampleSafeScopeAbsolutePath);
 
 		expect(originalResult.exitCode).toBe(0);
 		expect(transformedResult.exitCode).toBe(0);

@@ -64,7 +64,7 @@ export default createCommand((program) => {
 							return finish();
 						}
 					},
-					options.unlimited ? Infinity : 30 * 1000,
+					options.unlimited ? null : 30 * 1000,
 				);
 			},
 		);
