@@ -43,10 +43,22 @@ npm i -g expose-kit
 <!-- For Highlight -->
 ```regex
 expose --help
+expose parsable sample.js
 ```
 
 ## Docs
-Coming soon...
+By default, the first argument should be the file name (alternatively, `--file` or `--input` can be used).  
+Options such as `--output` are also available.  
+
+If no options are provided, this tool will prompt you for the required values.  
+
+To avoid memory leaks and hung processes, a reasonable timeout is set by default.
+When long-running execution is expected, the timeout can be disabled with `--unlimited`.
+
+### Commands
+
+#### `expose parsable`
+
 
 ## Authors
 - [EdamAme-x](https://github.com/EdamAme-x)
