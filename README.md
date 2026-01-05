@@ -70,7 +70,7 @@ expose parsable path/to/file.js
 ```
 
 ##### Args
-    *Only default args*
+- *Only default args*
 
 ---
 #### `expose scope-safe`
