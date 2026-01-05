@@ -155,7 +155,7 @@ Args:
 
 ### `expose pre-evaluate`
 
-Pre-evaluate const numeric/string expressions.
+Pre-evaluate const numeric/string expressions. (Safe evaluate)
 
 ```js
 const a = 1 + 2 * 3; // => 7
@@ -201,7 +201,6 @@ Args:
 
 Notes:
 - Each replacement is validated by reparsing; invalid replacements (e.g. `++a[0]` or `a[0]++`) are skipped.-
-- Please carefully confirm that the original array has not undergone operations such as shuffling and is fixed.
 
 ---
 
