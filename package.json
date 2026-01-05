@@ -15,6 +15,7 @@
   },
   "homepage": "https://evex.land",
   "scripts": {
+    "test": "bun test",
     "format": "biome format **/*.ts",
     "format:fix": "biome format --write **/*.ts",
     "lint": "biome lint **/*.ts",
