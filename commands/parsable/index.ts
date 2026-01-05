@@ -16,13 +16,16 @@ export default createCommand((program) => {
 		.option("--input, --file <file>", "The file to check")
 		.option("--unlimited", "Unlimited timeout")
 		.action(
-			async (fileArgument: string | undefined, options: { file?: string; unlimited?: boolean }) => {
+			async (
+				fileArgument: string | undefined,
+				options: { file?: string; unlimited?: boolean },
+			) => {
 				await timeout(
 					async ({ finish }) => {
 						const filename =
 							fileArgument ??
 							options.file ??
-							await createPrompt("Enter the file path:");
+							(await createPrompt("Enter the file path:"));
 
 						if (!filename) {
 							showError("No file provided");

@@ -9,6 +9,7 @@ import { createPrompt } from "@/utils/common/createPrompt";
 import { createParseOptions } from "@/utils/babel/createParseOptions";
 import { timeout } from "@/utils/common/timeout";
 import { showError } from "@/utils/common/showError";
+import { patchTraverse } from "@/utils/babel/patchTraverse";
 
 const createDefaultOutputPath = (inputPath: string) => {
 	const ext = extname(inputPath);
@@ -23,7 +24,7 @@ const renameBindingsByScope = (code: string, filename: string) => {
 	const ast = parse(code, createParseOptions(filename));
 	const renamedBindings = new Set<Binding>();
 
-	traverse(ast, {
+	patchTraverse(traverse)(ast, {
 		Scopable(path) {
 			for (const [name, binding] of Object.entries(path.scope.bindings)) {
 				if (renamedBindings.has(binding)) {
@@ -68,7 +69,7 @@ export default createCommand((program) => {
 						const filename =
 							fileArgument ??
 							options.file ??
-							await createPrompt("Enter the file path:");
+							(await createPrompt("Enter the file path:"));
 
 						if (!filename) {
 							showError("No file provided");
@@ -77,12 +78,13 @@ export default createCommand((program) => {
 
 						try {
 							const fileContent = readFileSync(filename, "utf8");
-                            const defaultOutputPath = createDefaultOutputPath(filename);
-							let outputPath =
+							const defaultOutputPath = createDefaultOutputPath(filename);
+							const outputPath =
 								options.output ??
-								(await createPrompt(
-									"Enter the output file path:",
-								) || "").trim() ?? defaultOutputPath;
+								(
+									(await createPrompt("Enter the output file path:")) || ""
+								).trim() ??
+								defaultOutputPath;
 							const loader = loading("Renaming variables by scope...").start();
 
 							try {
