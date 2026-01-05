@@ -14,8 +14,8 @@ const _prompt =
 
         return new Promise((resolve) => {
           const q = defaultValue
-            ? `${question} (${defaultValue}): `
-            : `${question}: `;
+            ? `${question} [${defaultValue}] `
+            : `${question} `;
 
           rl.question(q, (answer) => {
             rl.close();
