@@ -8,15 +8,30 @@
 ##### <center>❓ Question: Join our [Discord community](https://evex.land)</center>
 ---
 
-## Concepts
-Many *tools* currently exist, but most of them perform dangerous transformations and **break the code**.  
+## Concept
+JavaScript deobfuscation tools are *everywhere*.  
+<img width="145.2" height="113.5" alt="image" src="https://github.com/relative/synchrony/blob/master/.github/hm.png?raw=true" />
+
+
+But many of them are **too aggressive**, rewriting code until it breaks.  
 
 <img width="654" height="24" alt="image" src="https://github.com/user-attachments/assets/fd11d250-0163-4cd2-b36c-5514137fe087" />
 
-With *this tool*, we aim to minimize the possibility of code breakage by step-by-step performing individual tasks
-such as *safely separating scopes* and *expanding string tables* and more.
+Expose Kit takes *a different path*.
 
-Additionally, we offer various other useful tools. Everything is written in this [README](README.md).
+Instead of brute force, it works **step by step**.
+
+The goal is simple: **safe and universal toolkit**.
+
+Alongside deobfuscation, Expose Kit includes a collection of practical utilities.    
+
+Everything you need is documented right here in this [README](README.md).
+
+---
+
+##### If the feature you’re looking for doesn’t exist, please create an [issue](https://github.com/EdamAme-x/expose-kit/issues).  
+##### If you know what you want to do but aren’t sure which feature to use, join our [Discord community](https://evex.land) and ask for help.
+---
 
 ## Installation
 *Just one step*  
@@ -32,3 +47,9 @@ expose --help
 
 ## Docs
 Coming soon...
+
+## Authors
+- [EdamAme-x](https://github.com/EdamAme-x)
+
+Built for research, not abuse.  
+Want stronger obfuscation? Then make something this tool can’t undo.
