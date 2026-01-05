@@ -1,4 +1,4 @@
-# Expose JS
+# Expose Kit
 ![release workflow](https://github.com/evex-dev/linejs/actions/workflows/release.yml/badge.svg)
 [![](https://dcbadge.limes.pink/api/server/evex)](https://discord.gg/evex)  
 
