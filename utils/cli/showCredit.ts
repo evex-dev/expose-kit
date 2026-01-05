@@ -14,7 +14,7 @@ const beautify = <T>(strings: TemplateStringsArray, ...values: T[]) => {
 };
 
 const isNoColor = () => {
-	return Bun.env.NO_COLOR !== undefined && Bun.argv.includes("--no-color");
+	return process.env.NO_COLOR !== undefined && process.argv.includes("--no-color");
 };
 
 const calmGradienrain = (text: string) => {
