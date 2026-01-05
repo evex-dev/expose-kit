@@ -64,12 +64,12 @@ parsable:     const x = 810;
 not parsable: cons x; = 810;
 ```
 
-Example:
+##### Example
 ```bash
 expose parsable path/to/file.js
 ```
 
-args:
+##### Args
     *Only default args*
 
 ---
@@ -81,12 +81,12 @@ Before: var x = 810;((x) => console.log(x))(114514);
 After: var x = 810;((_x) => console.log(_x))(114514);
 ```
 
-Example:
+##### Example
 ```bash
 expose scope-safe path/to/file.js --output path/to/file.scope-safe.js
 ```
 
-args:
+##### Args
 - `--o, --output <file>`: Output file path  
   If the input has no extension, `path/to/file.scope-safe.js` is used.  
   Otherwise, `path/to/file.scope-safe.<ext>` is used (same directory).
