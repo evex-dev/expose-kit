@@ -9,7 +9,7 @@ import { createPrompt } from "@/utils/common/createPrompt";
 import { createParseOptions } from "@/utils/babel/createParseOptions";
 import { timeout } from "@/utils/common/timeout";
 import { showError } from "@/utils/common/showError";
-import { patchTraverse } from "@/utils/babel/patchTraverse";
+import { patchDefault } from "@/utils/babel/patchDefault";
 
 const createDefaultOutputPath = (inputPath: string) => {
 	const ext = extname(inputPath);
@@ -24,7 +24,7 @@ const renameBindingsByScope = (code: string, filename: string) => {
 	const ast = parse(code, createParseOptions(filename));
 	const renamedBindings = new Set<Binding>();
 
-	patchTraverse(traverse)(ast, {
+	patchDefault(traverse)(ast, {
 		Scopable(path) {
 			for (const [name, binding] of Object.entries(path.scope.bindings)) {
 				if (renamedBindings.has(binding)) {
@@ -44,7 +44,7 @@ const renameBindingsByScope = (code: string, filename: string) => {
 		},
 	});
 
-	return generate(ast).code;
+	return patchDefault(generate)(ast).code;
 };
 
 export default createCommand((program) => {
