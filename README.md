@@ -8,7 +8,7 @@
 ##### <center>❓ Question: Join our [Discord community](https://evex.land)</center>
 ---
 
-## Concept
+## # Concept
 JavaScript deobfuscation tools are *everywhere*.  
 <img width="145.2" height="113.5" alt="image" src="https://github.com/relative/synchrony/blob/master/.github/hm.png?raw=true" />
 
@@ -31,7 +31,7 @@ Everything you need is documented right here in this [README](README.md).
 ##### If you know what you want to do but aren’t sure which feature to use, join our [Discord community](https://evex.land) and ask for help.
 ---
 
-## Installation
+## # Installation
 *Just one step*  
 <!-- For Highlight -->
 ```regex
@@ -46,15 +46,48 @@ expose --help
 expose parsable sample.js
 ```
 
-## Docs
+## # Docs
+### ## About default args
+---
 By default, the first argument should be the file name (alternatively, `--file` or `--input` can be used).  
 
 If no options are provided, this tool will prompt you for the required values.  
 
 To avoid memory leaks and hung processes, a reasonable timeout is set by default.  
-When long-running execution is expected, the timeout can be disabled with `--unlimited`.
+When long-running execution is expected, the timeout can be disabled with `--unlimited`.  
 
-### Commands
+### ## Recommended way
+---
+First of all, as a fundamental premise, it is **impossible** to create a static deobfuscation tool that **never breaks**.  
+
+A clear example is **unpredictable execution** caused by things like `eval`.  
+Additionally, there is always the possibility of **bugs in AST manipulation** itself.  
+For these reasons, it is necessary to verify that nothing is broken **every time you perform a deobfuscation step** using the `parsable` command.  
+Of course, even if the syntax itself is not broken, the code may still be compromised due to latent issues such as `eval`.  
+Therefore, having an environment where you can **thoroughly test and validate** the result is extremely important.  
+
+Another major cause of problems is **variable name confusion**.  
+
+If you write your own deobfuscation logic in Python or similar languages, you would need to implement a parser-like system yourself just to correctly track **variable bindings and scopes**.  
+That sounds unpleasant, right?  
+
+This is where the `scope-safe` command comes in.  
+It is **highly recommended** to run this command **before executing any other deobfuscation steps**.  
+You will obtain results like the following.  
+
+With just this step, the code becomes **significantly more resistant to breakage**, and writing deobfuscation logic in Python or similar languages becomes much easier.  
+You no longer need to worry about scopes.  
+
+After that, simply combine common deobfuscation techniques such as the `expand-array` command, and **run `parsable` after each step**.  
+All that remains is to wait for the original code to reveal itself.  
+
+There are also commands specifically designed to break **legacy obfuscation produced by older versions of obfuscator.io**, so the best approach is to run them and inspect the resulting **diff**.  
+Fortunately, this tool will explicitly indicate whether a diff exists.  
+
+At this point, all you need to do is **repeat these simple steps**.  
+All available commands are listed below.  
+
+### ## Commands
 ---
 
 #### `expose parsable`
