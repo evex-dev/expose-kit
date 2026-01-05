@@ -52,4 +52,4 @@ Coming soon...
 - [EdamAme-x](https://github.com/EdamAme-x)
 
 Built for research, not abuse.  
-Want stronger obfuscation? Then make something this tool can’t undo.
+Want stronger obfuscation? Then make something this tool can’t reverse.
