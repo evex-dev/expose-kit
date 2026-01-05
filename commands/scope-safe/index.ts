@@ -56,7 +56,7 @@ export default createCommand((program) => {
 		.option("--unlimited", "Unlimited timeout")
 		.action(
 			async (
-				fileArgument,
+				fileArgument: string | undefined,
 				options: {
 					file?: string;
 					output?: string;
