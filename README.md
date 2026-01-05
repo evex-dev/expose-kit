@@ -18,10 +18,13 @@ such as *safely separating scopes* and *expanding string tables* and more.
 Additionally, we offer various other useful tools. Everything is written in this [README](README.md).
 
 ## Installation
+**Just one step**  
+<!-- For Highlight -->
 ```regex
 npm i -g expose-kit
 ```
 
+<!-- For Highlight -->
 ```regex
 expose --help
 ```
