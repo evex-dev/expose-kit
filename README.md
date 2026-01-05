@@ -8,3 +8,5 @@ With *this tool*, we aim to minimize the possibility of code breakage by step-by
 such as *safely separating scopes* and *expanding string tables* and more.
 
 Additionally, we offer various other useful tools. Everything is written in this [README](README.md).
+
+- Do you have any questions? [Discord Server](https://evex.land)
