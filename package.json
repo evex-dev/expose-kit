@@ -24,7 +24,7 @@
 		"build": "tsup",
 		"postbuild": "publint",
 		"prepublishOnly": "bun copy",
-		"release": "np"
+		"release": "bun run build && np"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.3.11",
