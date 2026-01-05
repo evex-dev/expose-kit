@@ -46,7 +46,6 @@ expose parsable sample.js
 
 ## Docs
 By default, the first argument should be the file name (alternatively, `--file` or `--input` can be used).  
-Options such as `--output` are also available.  
 
 If no options are provided, this tool will prompt you for the required values.  
 
