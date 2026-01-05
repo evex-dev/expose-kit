@@ -7,7 +7,7 @@ export function diff(before: string, after: string) {
   
     for (let i = 0; i < max; i++) {
       if (beforeLines[i] !== afterLines[i]) {
-        changed.push(i + 1); // 行番号は1始まり
+        changed.push(i + 1);
       }
     }
   
