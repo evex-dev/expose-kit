@@ -1,10 +1,11 @@
 # Expose JS
-![release workflow](https://github.com/evex-dev/linejs/actions/workflows/release.yml/badge.svg)  
+![release workflow](https://github.com/evex-dev/linejs/actions/workflows/release.yml/badge.svg)
 [![](https://dcbadge.limes.pink/api/server/evex)](https://discord.gg/evex)  
 
 > A universal toolkit for deobfuscating JavaScript  
 ---
-- Do you have any questions? Let's ask [Discord Server](https://evex.land)
+
+##### <center>❓ Question: Join our [Discord community](https://evex.land)</center>
 ---
 
 Many *tools* currently exist, but most of them perform dangerous transformations and **break the code**.  
