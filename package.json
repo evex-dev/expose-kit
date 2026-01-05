@@ -1,7 +1,6 @@
 {
   "name": "expose-kit",
   "version": "0.0.1",
-  "module": "index.ts",
   "type": "module",
   "private": false,
   "author": "EdamAmex <edame8080@gmail.com> (https://github.com/EdamAme-x)",
@@ -19,11 +18,17 @@
     "format": "biome format **/*.ts",
     "format:fix": "biome format --write **/*.ts",
     "lint": "biome lint **/*.ts",
-    "lint:fix": "biome lint --write **/*.ts"
+    "lint:fix": "biome lint --write **/*.ts",
+    "build": "tsup",
+    "postbuild": "publint",
+    "release": "np"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.11",
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "np": "^10.2.0",
+    "publint": "^0.3.16",
+    "tsup": "^8.5.1"
   },
   "peerDependencies": {
     "typescript": "^5"
@@ -44,5 +49,8 @@
     "expose-kit": "dist/index.js",
     "expose-js": "dist/index.js",
     "exposejs": "dist/index.js"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }
