@@ -4,12 +4,14 @@ import { fileURLToPath } from "node:url";
 import chalk from "chalk";
 import parsable from "@/commands/parsable";
 import { showCredit } from "@/utils/cli/showCredit";
-import pkg from "./package.json" with { type: "json" };
+import { readFileSync } from "node:fs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Read version from package.json
+const pkg = JSON.parse(readFileSync(join(__dirname, "package.json"), "utf8"));
+
 console.log(showCredit(pkg.version));
 console.log();
 
