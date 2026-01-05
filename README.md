@@ -105,7 +105,7 @@ With this alone:
 ### 3. Apply transforms step by step
 
 After `scope-safe`, combine common techniques like:
-- `expand-array`
+- `expand-array` and more
 - legacy obfuscator-specific commands
 
 After **each step**, run `parsable` again.
