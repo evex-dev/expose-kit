@@ -10,6 +10,7 @@ import { createParseOptions } from "@/utils/babel/createParseOptions";
 import { timeout } from "@/utils/common/timeout";
 import { showError } from "@/utils/common/showError";
 import { patchDefault } from "@/utils/babel/patchDefault";
+import { diff } from "@/utils/common/diff";
 
 const createDefaultOutputPath = (inputPath: string) => {
 	const ext = extname(inputPath);
@@ -90,7 +91,7 @@ export default createCommand((program) => {
 							try {
 								const output = renameBindingsByScope(fileContent, filename);
 								writeFileSync(outputPath, output, "utf8");
-								loader.succeed(`Saved scope-safe file to: ${outputPath}`);
+								loader.succeed(`Saved scope-safe file to: ${outputPath} (${diff(fileContent, output).length} lines changed)`);
 								return finish();
 							} catch (error: unknown) {
 								loader.fail("Failed to apply scope-safe transform");
