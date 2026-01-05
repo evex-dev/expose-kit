@@ -54,6 +54,7 @@ To avoid memory leaks and hung processes, a reasonable timeout is set by default
 When long-running execution is expected, the timeout can be disabled with `--unlimited`.
 
 ### Commands
+---
 
 #### `expose parsable`
 
