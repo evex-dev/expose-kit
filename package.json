@@ -28,7 +28,6 @@
   "devDependencies": {
     "@biomejs/biome": "2.3.11",
     "@types/bun": "latest",
-    "cp": "^0.2.0",
     "publint": "^0.3.16",
     "tsup": "^8.5.1"
   },
