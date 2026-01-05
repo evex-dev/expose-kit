@@ -10,6 +10,9 @@
 
 ## Concept
 JavaScript deobfuscation tools are *everywhere*.  
+<img width="145.2" height="113.5" alt="image" src="https://github.com/relative/synchrony/blob/master/.github/hm.png?raw=true" />
+
+
 But many of them are **too aggressive**, rewriting code until it breaks.  
 
 <img width="654" height="24" alt="image" src="https://github.com/user-attachments/assets/fd11d250-0163-4cd2-b36c-5514137fe087" />
@@ -43,3 +46,9 @@ expose --help
 
 ## Docs
 Coming soon...
+
+## Authors
+- [EdamAme-x](https://github.com/EdamAme-x)
+
+Built for research, not abuse.  
+Want stronger obfuscation? Then make something this tool can’t undo.
