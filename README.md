@@ -94,6 +94,7 @@ This renames bindings per scope, producing code like:
 Before: var x = 810;((x) => console.log(x))(114514);
 After:  var x = 810;((_x) => console.log(_x))(114514);
 ```
+Example is [here](https://github.com/evex-dev/expose-kit/tree/main/commands/safe-scope/mocks).
 
 With this alone:
 - The code becomes far more resistant to breakage
