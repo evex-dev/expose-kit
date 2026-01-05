@@ -1,5 +1,5 @@
 {
-  "name": "expose-js",
+  "name": "expose-kit",
   "version": "0.0.1",
   "module": "index.ts",
   "type": "module",
@@ -8,7 +8,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/EdamAme-x/expose-js.git"
+    "url": "git+https://github.com/EdamAme-x/expose-kit.git"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
@@ -29,11 +29,19 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@babel/generator": "^7.28.5",
+    "@babel/parser": "^7.28.5",
+    "@babel/traverse": "^7.28.5",
+    "@babel/types": "^7.28.5",
+    "@types/babel__generator": "^7.27.0",
+    "@types/babel__traverse": "^7.28.0",
     "chalk": "^5.6.2",
-    "commander": "^14.0.2"
+    "commander": "^14.0.2",
+    "loading-cli": "^1.1.2"
   },
   "bin": {
     "expose": "dist/index.js",
+    "expose-kit": "dist/index.js",
     "expose-js": "dist/index.js",
     "exposejs": "dist/index.js"
   }
