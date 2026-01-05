@@ -2,6 +2,7 @@ import chalk from "chalk";
 import readline from "node:readline";
 
 const PREFIX = chalk.bold(chalk.gray("?"));
+// polyfill for nodejs
 const _prompt =
   "prompt" in globalThis
     ? globalThis.prompt

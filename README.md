@@ -36,6 +36,8 @@ Everything you need is documented right here in this [README](README.md).
 <!-- For Highlight -->
 ```regex
 npm i -g expose-kit
+# or
+bun i -g expose-kit
 ```
 
 <!-- For Highlight -->
