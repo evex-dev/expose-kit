@@ -70,9 +70,8 @@ expose parsable path/to/file.js
 ```
 
 args:
-- `[file]`: The file to check
-- `--input, --file <file>`: The file to check
-- `--unlimited`: Unlimited timeout (default: 30s)
+    *Only default args*
+
 ---
 #### `expose scope-safe`
 
@@ -88,12 +87,9 @@ expose scope-safe path/to/file.js --output path/to/file.scope-safe.js
 ```
 
 args:
-- `[file]`: The file to transform
-- `--input, --file <file>`: The file to transform
 - `--o, --output <file>`: Output file path  
   If the input has no extension, `path/to/file.scope-safe.js` is used.  
   Otherwise, `path/to/file.scope-safe.<ext>` is used (same directory).
-- `--unlimited`: Unlimited timeout (default: 120s)
 
 ## Authors
 - [EdamAme-x](https://github.com/EdamAme-x)
