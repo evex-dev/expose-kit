@@ -1,15 +1,46 @@
-export function diff(before: string, after: string) {
-    const beforeLines = before.split(/\r?\n/);
-    const afterLines = after.split(/\r?\n/);
-  
-    const changed = [];
-    const max = Math.max(beforeLines.length, afterLines.length);
-  
-    for (let i = 0; i < max; i++) {
-      if (beforeLines[i] !== afterLines[i]) {
-        changed.push(i + 1);
-      }
-    }
-  
-    return changed;
-  }
+export function diff(before: string, after: string, lookahead = 3) {
+	const b = before.split(/\r?\n/);
+	const a = after.split(/\r?\n/);
+
+	const changed: number[] = [];
+	let i = 0,
+		j = 0;
+
+	while (i < b.length || j < a.length) {
+		if (b[i] === a[j]) {
+			i++;
+			j++;
+			continue;
+		}
+
+		let matched = false;
+
+		for (let k = 1; k <= lookahead; k++) {
+			if (b[i] === a[j + k]) {
+				changed.push(j + 1);
+				j += k;
+				matched = true;
+				break;
+			}
+		}
+
+		if (!matched) {
+			for (let k = 1; k <= lookahead; k++) {
+				if (b[i + k] === a[j]) {
+					changed.push(j + 1);
+					i += k;
+					matched = true;
+					break;
+				}
+			}
+		}
+
+		if (!matched) {
+			changed.push(j + 1);
+			i++;
+			j++;
+		}
+	}
+
+	return [...new Set(changed)];
+}
