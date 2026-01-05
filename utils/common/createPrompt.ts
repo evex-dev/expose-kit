@@ -8,6 +8,8 @@ export const createPrompt = (...args: Parameters<typeof prompt>) => {
 		throw new Error("Question is required");
 	}
 	const defaultAnswer = args.shift();
-    const answer = defaultAnswer ? prompt(`${PREFIX} ${question}`, defaultAnswer) : prompt(`${PREFIX} ${question}`);
+	const answer = defaultAnswer
+		? prompt(`${PREFIX} ${question}`, defaultAnswer)
+		: prompt(`${PREFIX} ${question}`);
 	return answer;
 };

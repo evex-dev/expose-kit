@@ -1,58 +1,58 @@
 {
-  "name": "expose-kit",
-  "version": "0.1.6",
-  "type": "module",
-  "private": false,
-  "author": "EdamAmex <edame8080@gmail.com> (https://github.com/EdamAme-x)",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/EdamAme-x/expose-kit.git"
-  },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org",
-    "access": "public"
-  },
-  "homepage": "https://evex.land",
-  "scripts": {
-    "test": "bun test",
-    "format": "biome format **/*.ts",
-    "format:fix": "biome format --write **/*.ts",
-    "lint": "biome lint **/*.ts",
-    "lint:fix": "biome lint --write **/*.ts",
-    "copy": "bun run utils/common/cp.ts package.json dist/package.json",
-    "build": "tsup",
-    "postbuild": "publint",
-    "prepublishOnly": "bun copy",
-    "release": "np"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "2.3.11",
-    "@types/bun": "latest",
-    "publint": "^0.3.16",
-    "tsup": "^8.5.1"
-  },
-  "peerDependencies": {
-    "typescript": "^5"
-  },
-  "dependencies": {
-    "@babel/generator": "^7.28.5",
-    "@babel/parser": "^7.28.5",
-    "@babel/traverse": "^7.28.5",
-    "@babel/types": "^7.28.5",
-    "@types/babel__generator": "^7.27.0",
-    "@types/babel__traverse": "^7.28.0",
-    "chalk": "^5.6.2",
-    "commander": "^14.0.2",
-    "loading-cli": "^1.1.2"
-  },
-  "bin": {
-    "expose": "dist/index.js",
-    "expose-kit": "dist/index.js",
-    "expose-js": "dist/index.js",
-    "exposejs": "dist/index.js"
-  },
-  "files": [
-    "dist"
-  ]
+	"name": "expose-kit",
+	"version": "0.1.6",
+	"type": "module",
+	"private": false,
+	"author": "EdamAmex <edame8080@gmail.com> (https://github.com/EdamAme-x)",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/EdamAme-x/expose-kit.git"
+	},
+	"publishConfig": {
+		"registry": "https://registry.npmjs.org",
+		"access": "public"
+	},
+	"homepage": "https://evex.land",
+	"scripts": {
+		"test": "bun test",
+		"format": "biome format .",
+		"format:fix": "biome format --write .",
+		"lint": "biome lint .",
+		"lint:fix": "biome lint --write .",
+		"copy": "bun run utils/common/cp.ts package.json dist/package.json",
+		"build": "tsup",
+		"postbuild": "publint",
+		"prepublishOnly": "bun copy",
+		"release": "np"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.3.11",
+		"@types/bun": "latest",
+		"publint": "^0.3.16",
+		"tsup": "^8.5.1"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"dependencies": {
+		"@babel/generator": "^7.28.5",
+		"@babel/parser": "^7.28.5",
+		"@babel/traverse": "^7.28.5",
+		"@babel/types": "^7.28.5",
+		"@types/babel__generator": "^7.27.0",
+		"@types/babel__traverse": "^7.28.0",
+		"chalk": "^5.6.2",
+		"commander": "^14.0.2",
+		"loading-cli": "^1.1.2"
+	},
+	"bin": {
+		"expose": "dist/index.js",
+		"expose-kit": "dist/index.js",
+		"expose-js": "dist/index.js",
+		"exposejs": "dist/index.js"
+	},
+	"files": [
+		"dist"
+	]
 }

@@ -3,6 +3,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import chalk from "chalk";
 import parsable from "@/commands/parsable";
+import scopeSafe from "@/commands/scope-safe";
 import { showCredit } from "@/utils/cli/showCredit";
 import { readFileSync } from "node:fs";
 
@@ -26,7 +27,7 @@ program
 		"display version number",
 	);
 
-const commands = [parsable];
+const commands = [parsable, scopeSafe];
 
 for (const command of commands) {
 	command(program);
