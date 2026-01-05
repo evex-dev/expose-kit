@@ -23,6 +23,11 @@ The goal is simple: **safe and universal toolkit**.
 Alongside deobfuscation, Expose Kit includes a collection of practical utilities.  
 Everything you need is documented right here in this [README](README.md).
 
+---
+If the feature you’re looking for doesn’t exist, please create an [issue](https://github.com/EdamAme-x/expose-kit/issues).
+If you know what you want to do but aren’t sure which feature to use, join our [Discord community](https://evex.land) and ask for help.
+---
+
 ## Installation
 *Just one step*  
 <!-- For Highlight -->
