@@ -5,6 +5,7 @@ import chalk from "chalk";
 import parsable from "@/commands/parsable";
 import safeScope from "@/commands/safe-scope";
 import expandArray from "@/commands/expand-array";
+import preEvaluate from "@/commands/pre-evaluate";
 import { showCredit } from "@/utils/cli/showCredit";
 import { readFileSync } from "node:fs";
 
@@ -28,7 +29,7 @@ program
 		"display version number",
 	);
 
-const commands = [parsable, safeScope, expandArray];
+const commands = [parsable, safeScope, expandArray, preEvaluate];
 
 for (const command of commands) {
 	command(program);

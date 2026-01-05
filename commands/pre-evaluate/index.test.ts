@@ -3,13 +3,13 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "bun:test";
 import { join } from "node:path";
 import { readFileSync } from "node:fs";
 import vm from "node:vm";
-import expandArray from ".";
+import preEvaluate from ".";
 
 const sampleMockFileAbsolutePath = join(__dirname, "mocks", "sample.js");
-const sampleExpandArrayAbsolutePath = join(
+const samplePreEvaluateAbsolutePath = join(
 	__dirname,
 	"mocks",
-	"sample.expand-array.js",
+	"sample.pre-evaluate.js",
 );
 
 const runScript = (filePath: string) => {
@@ -41,7 +41,7 @@ const runScript = (filePath: string) => {
 	}
 };
 
-describe("Expand Array Command", () => {
+describe("Pre Evaluate Command", () => {
 	let program: Command;
 
 	beforeEach(() => {
@@ -53,23 +53,21 @@ describe("Expand Array Command", () => {
 		vi.restoreAllMocks();
 	});
 
-	it("Should keep runtime behavior after transformation", async () => {
-		expandArray(program);
+	it("Should keep runtime behavior after transform", async () => {
+		preEvaluate(program);
 
 		await program.parseAsync([
 			"_",
 			"_",
-			"expand-array",
+			"pre-evaluate",
 			sampleMockFileAbsolutePath,
-			"--target",
-			"a",
 			"--output",
-			sampleExpandArrayAbsolutePath,
+			samplePreEvaluateAbsolutePath,
 			"--unlimited",
 		]);
 
 		const originalResult = runScript(sampleMockFileAbsolutePath);
-		const transformedResult = runScript(sampleExpandArrayAbsolutePath);
+		const transformedResult = runScript(samplePreEvaluateAbsolutePath);
 
 		expect(originalResult.exitCode).toBe(0);
 		expect(transformedResult.exitCode).toBe(0);

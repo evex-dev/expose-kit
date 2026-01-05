@@ -94,7 +94,6 @@ This renames bindings per scope, producing code like:
 Before: var x = 810;((x) => console.log(x))(114514);
 After:  var x = 810;((_x) => console.log(_x))(114514);
 ```
-Example is [here](https://github.com/evex-dev/expose-kit/tree/main/commands/safe-scope/mocks).
 
 With this alone:
 - The code becomes far more resistant to breakage
@@ -125,7 +124,7 @@ Check whether a file is syntactically valid.
 
 ```js
 parsable:     const x = 810;
-not parsable: cons x; = 810;
+not parsable: const ;x; == 810;
 ```
 
 ```bash
@@ -144,6 +143,7 @@ Rename bindings per scope for safer transformations.
 ```bash
 expose safe-scope path/to/file.js --output path/to/file.safe-scope.js
 ```
+Example is [here](https://github.com/evex-dev/expose-kit/tree/main/commands/safe-scope/mocks).
 
 Args:
 - `--o, --output <file>`  
@@ -153,9 +153,39 @@ Args:
 
 ---
 
+### `expose pre-evaluate`
+
+Pre-evaluate const numeric/string expressions.
+
+```js
+const a = 1 + 2 * 3; // => 7
+const c = "aaaa";
+const b = "a" + c; // => "aaaaa"
+```
+
+```bash
+expose pre-evaluate path/to/file.js --output path/to/file.pre-evaluate.js
+```
+
+Args:
+- `--o, --output <file>`  
+  Output file path  
+  - No extension → `file.pre-evaluate.js`
+  - With extension → `file.pre-evaluate.<ext>`
+
+---
+
 ### `expose expand-array`
 
 Expand array index access for primitive values.
+```js
+var a = [1, 1, 4, 5, 1, 4];
+// before
+console.log(a[0], a[2], a[3]);
+// after
+console.log(1, 4, 5);
+```
+Example is [here](https://github.com/evex-dev/expose-kit/tree/main/commands/expand-array/mocks).
 
 ```bash
 expose expand-array path/to/file.js --target arrayName --output path/to/file.expand-array.js

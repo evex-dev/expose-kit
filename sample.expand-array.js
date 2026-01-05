@@ -1,4 +1,4 @@
-const a = [0, 1, -2, "x", true, null, undefined, () => 0];
+const a = [0, 1, -2, "x", true, null, undefined, () => {}];
 const b = 0 + -2;
 const c = "x";
 const d = true ? "yes" : "no";
@@ -9,7 +9,7 @@ const e = null;
 // beast(a);
 
 const f = undefined;
-const g = () => 0;
+const g = () => {};
 const h = a[-1];
 const i = ++a[1];
 const i2 = a[1]++;
@@ -22,4 +22,4 @@ function demo() {
   const a = ["shadow"];
   return a[0];
 }
-console.log(b, c, d, e, f, g(), h, i, i2, j, k, l, m, n, demo());
+console.log(b, c, d, e, f, g, h, i, i2, j, k, l, m, n, demo());

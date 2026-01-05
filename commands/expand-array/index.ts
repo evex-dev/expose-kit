@@ -39,7 +39,7 @@ const isPrimitiveArray = (arrayNode: t.ArrayExpression) => {
 		if (!element || t.isSpreadElement(element)) {
 			return false;
 		}
-		return isPrimitiveValue(element);
+		return true;
 	});
 };
 
@@ -78,9 +78,43 @@ const isAssignmentTarget = (path: NodePath<t.MemberExpression>) => {
 	return false;
 };
 
+const collectMutatedIndexes = (ast: t.File, targetName: string) => {
+	const mutatedIndexes = new Set<number>();
+	let hasUnknownMutations = false;
+
+	patchDefault(traverse)(ast, {
+		MemberExpression(path) {
+			if (!path.node.computed) return;
+			if (!t.isIdentifier(path.node.object, { name: targetName })) return;
+
+			const parent = path.parentPath;
+			if (!parent) return;
+
+			const isMutationTarget =
+				parent.isUpdateExpression() ||
+				(parent.isAssignmentExpression() && parent.get("left") === path) ||
+				(parent.isForInStatement() && parent.get("left") === path) ||
+				(parent.isForOfStatement() && parent.get("left") === path);
+
+			if (!isMutationTarget) return;
+            if (!t.isExpression(path.node.property)) return;
+
+			const index = getIndexFromProperty(path.node.property);
+			if (index === null) {
+				hasUnknownMutations = true;
+				return;
+			}
+			mutatedIndexes.add(index);
+		},
+	});
+
+	return { mutatedIndexes, hasUnknownMutations };
+};
+
 type ArrayInfo = {
 	binding: Binding | null;
 	arrayNode: t.ArrayExpression;
+    hasRiskOfSideEffects?: boolean;
 };
 
 const findTargetArray = (ast: t.File, targetName: string): ArrayInfo | null => {
@@ -107,10 +141,31 @@ const findTargetArray = (ast: t.File, targetName: string): ArrayInfo | null => {
 			};
 		},
 	});
-	return found;
+	
+	if (!found) return null;
+	
+	let hasRiskOfSideEffects = false;
+	patchDefault(traverse)(ast, {
+		Identifier(path) {
+			if (hasRiskOfSideEffects) return;
+			if (!t.isIdentifier(path.node, { name: targetName })) return;
+			const parent = path.parentPath;
+			if (!parent) return;
+			if (parent.isVariableDeclarator() && parent.get("id") === path) return;
+			if (parent.isAssignmentExpression() && parent.get("left") === path) return;
+			
+			if (parent.isMemberExpression() && parent.get("object") === path) return;
+			
+			hasRiskOfSideEffects = true;
+		},
+	});
+	
+	const result = found as ArrayInfo;
+	result.hasRiskOfSideEffects = hasRiskOfSideEffects;
+	return result;
 };
 
-const expandArrayAccess = (
+const expandArrayAccess = async (
 	code: string,
 	filename: string,
 	targetName: string,
@@ -122,10 +177,25 @@ const expandArrayAccess = (
 		throw new Error(`Target array '${targetName}' is not a primitive array`);
 	}
 
+	if (targetArray.hasRiskOfSideEffects) {
+        const continueAnswer = await createPrompt("The target array has risk of side effects, do you want to continue? (y/n)");
+        if (continueAnswer !== "y") {
+            throw new Error("User cancelled");
+        }
+	}
+
 	const candidates: Array<{
 		path: NodePath<t.MemberExpression>;
 		replacement: t.Expression;
 	}> = [];
+
+	const mutatedInfo = collectMutatedIndexes(ast, targetName);
+	if (mutatedInfo.hasUnknownMutations) {
+		return {
+			code: patchDefault(generate)(ast).code,
+			replacedCount: 0,
+		};
+	}
 
 	patchDefault(traverse)(ast, {
 		MemberExpression(path) {
@@ -141,9 +211,9 @@ const expandArrayAccess = (
 			if (!t.isExpression(path.node.property)) return;
 			const index = getIndexFromProperty(path.node.property);
 			if (index === null || index < 0) return;
+			if (mutatedInfo.mutatedIndexes.has(index)) return;
 			const element = targetArray.arrayNode.elements[index];
 			if (!element || t.isSpreadElement(element)) return;
-			if (!isPrimitiveValue(element)) return;
 			candidates.push({
 				path,
 				replacement: t.cloneNode(element, true),
@@ -225,7 +295,7 @@ export default createCommand((program) => {
 							const loader = loading("Expanding array access...").start();
 
 							try {
-								const { code: output, replacedCount } = expandArrayAccess(
+								const { code: output, replacedCount } = await expandArrayAccess(
 									fileContent,
 									filename,
 									targetName,
