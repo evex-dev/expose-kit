@@ -199,7 +199,7 @@ Args:
 
 Notes:
 - Each replacement is validated by reparsing; unsafe replacements are skipped. 
-    (There is a limit, so please note that the array is immutable.)
+    (This array is intended to be immutable, so caution is required)
 
 ---
 
@@ -227,7 +227,7 @@ Args:
 
 Notes:
 - Each replacement is validated by reparsing; unsafe replacements are skipped.
-    (There is a limit, so please note that the object is immutable.)
+    (This object is intended to be immutable, so caution is required)
 
 ---
 
