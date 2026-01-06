@@ -198,7 +198,8 @@ Args:
   Output file path  
 
 Notes:
-- Each replacement is validated by reparsing; invalid replacements (e.g. `++a[0]` or `a[0]++`) are skipped.-
+- Each replacement is validated by reparsing; unsafe replacements are skipped. 
+    (There is a limit, so please note that the array is immutable.)
 
 ---
 
@@ -225,7 +226,8 @@ Args:
   Output file path  
 
 Notes:
-- Each replacement is validated by reparsing; invalid replacements are skipped.
+- Each replacement is validated by reparsing; unsafe replacements are skipped.
+    (There is a limit, so please note that the object is immutable.)
 
 ---
 
