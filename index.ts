@@ -6,6 +6,7 @@ import parsable from "@/commands/parsable";
 import safeScope from "@/commands/safe-scope";
 import expandArray from "@/commands/expand-array";
 import expandObject from "@/commands/expand-object";
+import objectPacker from "@/commands/object-packer";
 import preEvaluate from "@/commands/pre-evaluate";
 import removeUnused from "@/commands/remove-unused";
 import { showCredit } from "@/utils/cli/showCredit";
@@ -36,6 +37,7 @@ const commands = [
 	safeScope,
 	expandArray,
 	expandObject,
+	objectPacker,
 	preEvaluate,
 	removeUnused,
 ];

@@ -53,4 +53,27 @@ Write-Utf8NoBom -Path $file -Content ($old+"`nYOUR_TEXT_HERE`n")
 "'
 ```
 
+---
+
+## 3) Understand this project
+[README.md] : docs
+
+[index.ts] : entry
+    if you make new command, you should modify this file. (new command -> command list)
+
+### Utils
+/utils/[group]/* : utils
+example : [./utils/common/createPrompt.ts]
+
+### Commands
+/commands/[command name]/index.ts : main
+    example: [./commands/expand-object/index.ts]
+/commands/[command name]/index.test.ts : testing
+    example: [./commands/expand-object/index.test.ts]
+/commands/[command name]/mocks/* : example files
+    example: [./commands/expand-object/mocks/sample.js], [./commands/expand-object/mocks/sample-expand-object.js]
+
 Check [README](./README.md)
+
+## 4) After implement
+Add docs to [README.md](README.md)

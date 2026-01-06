@@ -231,6 +231,33 @@ Notes:
 
 ---
 
+### `expose object-packer`
+
+Pack consecutive object property assignments into literals.
+```js
+const obj = {};
+// before
+obj.a = 0;
+obj["b"] = 1;
+// after
+const obj = { a: 0, b: 1 };
+```
+Example is [here](https://github.com/evex-dev/expose-kit/tree/main/commands/object-packer/mocks).
+
+```bash
+expose object-packer path/to/file.js --output path/to/file.object-packer.js
+```
+
+Args:
+- `--o, --output <file>`  
+  Output file path  
+
+Notes:
+- Packs only consecutive assignments following an empty object literal.
+- Stops when a property value references the object itself.
+
+---
+
 ### `expose remove-unused`
 
 Remove unused variabless.
