@@ -16,36 +16,44 @@ import { diff } from "@/utils/common/diff";
 const createDefaultOutputPath = (inputPath: string) => {
 	const ext = extname(inputPath);
 	if (!ext) {
-		return `${inputPath}.expand-array.js`;
+		return `${inputPath}.expand-object.js`;
 	}
 	const base = basename(inputPath, ext);
-	return join(dirname(inputPath), `${base}.expand-array${ext}`);
+	return join(dirname(inputPath), `${base}.expand-object${ext}`);
 };
 
-const isPrimitiveArray = (arrayNode: t.ArrayExpression) => {
-	return arrayNode.elements.every((element) => {
-		if (!element || t.isSpreadElement(element)) {
-			return false;
-		}
-		return true;
-	});
+const getPropertyKeyFromObjectProperty = (
+	property: t.ObjectProperty,
+): string | null => {
+	if (t.isIdentifier(property.key)) {
+		return property.key.name;
+	}
+	if (t.isStringLiteral(property.key)) {
+		return property.key.value;
+	}
+	if (t.isNumericLiteral(property.key)) {
+		return String(property.key.value);
+	}
+	return null;
 };
 
-const getIndexFromProperty = (property: t.Expression): number | null => {
-	if (t.isNumericLiteral(property) && Number.isInteger(property.value)) {
-		return property.value;
+const getPropertyKeyFromMemberExpression = (
+	node: t.MemberExpression,
+): string | null => {
+	if (!node.computed && t.isIdentifier(node.property)) {
+		return node.property.name;
 	}
-	if (t.isStringLiteral(property)) {
-		if (!/^-?\d+$/.test(property.value)) {
-			return null;
-		}
-		return Number.parseInt(property.value, 10);
+	if (!node.computed || !t.isExpression(node.property)) {
+		return null;
 	}
-	if (
-		t.isUnaryExpression(property, { operator: "-" }) &&
-		t.isNumericLiteral(property.argument)
-	) {
-		return -property.argument.value;
+	if (t.isStringLiteral(node.property)) {
+		return node.property.value;
+	}
+	if (t.isNumericLiteral(node.property)) {
+		return String(node.property.value);
+	}
+	if (t.isTemplateLiteral(node.property) && node.property.expressions.length === 0) {
+		return node.property.quasis[0]?.value.cooked ?? null;
 	}
 	return null;
 };
@@ -66,13 +74,12 @@ const isAssignmentTarget = (path: NodePath<t.MemberExpression>) => {
 	return false;
 };
 
-const collectMutatedIndexes = (ast: t.File, targetName: string) => {
-	const mutatedIndexes = new Set<number>();
+const collectMutatedProperties = (ast: t.File, targetName: string) => {
+	const mutatedProperties = new Set<string>();
 	let hasUnknownMutations = false;
 
 	patchDefault(traverse)(ast, {
 		MemberExpression(path) {
-			if (!path.node.computed) return;
 			if (!t.isIdentifier(path.node.object, { name: targetName })) return;
 
 			const parent = path.parentPath;
@@ -85,47 +92,75 @@ const collectMutatedIndexes = (ast: t.File, targetName: string) => {
 				(parent.isForOfStatement() && parent.get("left") === path);
 
 			if (!isMutationTarget) return;
-			if (!t.isExpression(path.node.property)) return;
 
-			const index = getIndexFromProperty(path.node.property);
-			if (index === null) {
+			const propertyKey = getPropertyKeyFromMemberExpression(path.node);
+			if (!propertyKey) {
 				hasUnknownMutations = true;
 				return;
 			}
-			mutatedIndexes.add(index);
+			mutatedProperties.add(propertyKey);
 		},
 	});
 
-	return { mutatedIndexes, hasUnknownMutations };
+	return { mutatedProperties, hasUnknownMutations };
 };
 
-type ArrayInfo = {
+type ObjectInfo = {
 	binding: Binding | null;
-	arrayNode: t.ArrayExpression;
+	objectNode: t.ObjectExpression;
+	propertyMap: Map<string, t.Expression>;
 	hasRiskOfSideEffects?: boolean;
 };
 
-const findTargetArray = (ast: t.File, targetName: string): ArrayInfo | null => {
-	let found: ArrayInfo | null = null;
+const getPropertyMap = (
+	objectNode: t.ObjectExpression,
+): Map<string, t.Expression> | null => {
+	const map = new Map<string, t.Expression>();
+	for (const property of objectNode.properties) {
+		if (!t.isObjectProperty(property)) {
+			return null;
+		}
+		if (property.computed) {
+			return null;
+		}
+		if (!t.isExpression(property.value)) {
+			return null;
+		}
+		const key = getPropertyKeyFromObjectProperty(property);
+		if (!key) {
+			return null;
+		}
+		map.set(key, property.value);
+	}
+	return map;
+};
+
+const findTargetObject = (ast: t.File, targetName: string): ObjectInfo | null => {
+	let found: ObjectInfo | null = null;
+
 	patchDefault(traverse)(ast, {
 		VariableDeclarator(path) {
 			if (found) return;
 			if (!t.isIdentifier(path.node.id, { name: targetName })) return;
-			if (!t.isArrayExpression(path.node.init)) return;
-			if (!isPrimitiveArray(path.node.init)) return;
+			if (!t.isObjectExpression(path.node.init)) return;
+			const propertyMap = getPropertyMap(path.node.init);
+			if (!propertyMap) return;
 			found = {
 				binding: path.scope.getBinding(targetName) ?? null,
-				arrayNode: path.node.init,
+				objectNode: path.node.init,
+				propertyMap,
 			};
 		},
 		AssignmentExpression(path) {
 			if (found) return;
 			if (!t.isIdentifier(path.node.left, { name: targetName })) return;
-			if (!t.isArrayExpression(path.node.right)) return;
-			if (!isPrimitiveArray(path.node.right)) return;
+			if (!t.isObjectExpression(path.node.right)) return;
+			const propertyMap = getPropertyMap(path.node.right);
+			if (!propertyMap) return;
 			found = {
 				binding: path.scope.getBinding(targetName) ?? null,
-				arrayNode: path.node.right,
+				objectNode: path.node.right,
+				propertyMap,
 			};
 		},
 	});
@@ -158,26 +193,26 @@ const findTargetArray = (ast: t.File, targetName: string): ArrayInfo | null => {
 		},
 	});
 
-	const result = found as ArrayInfo;
+	const result = found as ObjectInfo;
 	result.hasRiskOfSideEffects = hasRiskOfSideEffects;
 	return result;
 };
 
-const expandArrayAccess = async (
+const expandObjectAccess = async (
 	code: string,
 	filename: string,
 	targetName: string,
 ) => {
 	const ast = parse(code, createParseOptions(filename));
-	const targetArray = findTargetArray(ast, targetName);
+	const targetObject = findTargetObject(ast, targetName);
 
-	if (!targetArray) {
-		throw new Error(`Target array '${targetName}' is not a primitive array`);
+	if (!targetObject) {
+		throw new Error(`Target object '${targetName}' is not a primitive object`);
 	}
 
-	if (targetArray.hasRiskOfSideEffects) {
+	if (targetObject.hasRiskOfSideEffects) {
 		const continueAnswer = await createPrompt(
-			"The target array has risk of side effects, do you want to continue? (y/n)",
+			"The target object has risk of side effects, do you want to continue? (y/n)",
 		);
 		if (continueAnswer !== "y") {
 			throw new Error("User cancelled");
@@ -189,7 +224,7 @@ const expandArrayAccess = async (
 		replacement: t.Expression;
 	}> = [];
 
-	const mutatedInfo = collectMutatedIndexes(ast, targetName);
+	const mutatedInfo = collectMutatedProperties(ast, targetName);
 	if (mutatedInfo.hasUnknownMutations) {
 		return {
 			code: patchDefault(generate)(ast).code,
@@ -199,24 +234,22 @@ const expandArrayAccess = async (
 
 	patchDefault(traverse)(ast, {
 		MemberExpression(path) {
-			if (!path.node.computed) return;
 			if (isAssignmentTarget(path)) return;
 			if (!t.isIdentifier(path.node.object, { name: targetName })) return;
 			if (
-				targetArray.binding &&
-				path.scope.getBinding(targetName) !== targetArray.binding
+				targetObject.binding &&
+				path.scope.getBinding(targetName) !== targetObject.binding
 			) {
 				return;
 			}
-			if (!t.isExpression(path.node.property)) return;
-			const index = getIndexFromProperty(path.node.property);
-			if (index === null || index < 0) return;
-			if (mutatedInfo.mutatedIndexes.has(index)) return;
-			const element = targetArray.arrayNode.elements[index];
-			if (!element || t.isSpreadElement(element)) return;
+			const propertyKey = getPropertyKeyFromMemberExpression(path.node);
+			if (!propertyKey) return;
+			if (mutatedInfo.mutatedProperties.has(propertyKey)) return;
+			const replacement = targetObject.propertyMap.get(propertyKey);
+			if (!replacement) return;
 			candidates.push({
 				path,
-				replacement: t.cloneNode(element, true),
+				replacement: t.cloneNode(replacement, true),
 			});
 		},
 	});
@@ -243,11 +276,11 @@ const expandArrayAccess = async (
 
 export default createCommand((program) => {
 	program
-		.command("expand-array")
-		.description("Expand array index access for primitive values")
+		.command("expand-object")
+		.description("Expand object property access for primitive values")
 		.argument("[file]", "The file to transform")
 		.option("--input, --file <file>", "The file to transform")
-		.option("--target <name>", "Target array variable name")
+		.option("--target <name>", "Target object variable name")
 		.option("--o, --output <file>", "Output file path")
 		.option("--unlimited", "Unlimited timeout")
 		.action(
@@ -292,23 +325,23 @@ export default createCommand((program) => {
 								)?.trim();
 								outputPath = promptPath || defaultOutputPath;
 							}
-							const loader = loading("Expanding array access...").start();
+							const loader = loading("Expanding object access...").start();
 
 							try {
-								const { code: output, replacedCount } = await expandArrayAccess(
+								const { code: output, replacedCount } = await expandObjectAccess(
 									fileContent,
 									filename,
 									targetName,
 								);
 								writeFileSync(outputPath, output, "utf8");
 								loader.succeed(
-									`Saved expand-array file to: ${outputPath} (${
+									`Saved expand-object file to: ${outputPath} (${
 										diff(fileContent, output).length
 									} lines changed, ${replacedCount} replacements)`,
 								);
 								return finish();
 							} catch (error: unknown) {
-								loader.fail("Failed to apply expand-array transform");
+								loader.fail("Failed to apply expand-object transform");
 								showError(
 									`Error transforming file '${filename}': ${
 										error instanceof Error ? error.message : "Unknown error"

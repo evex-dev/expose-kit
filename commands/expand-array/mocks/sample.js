@@ -5,16 +5,9 @@ const d = a[4] ? "yes" : "no";
 
 const e = a[5];
 
-// side effects
-// const beast = (mr) => console.log(mr);
-// beast(a);
-
 const f = a[6];
 const g = a[7];
 const h = a[-1];
-const i = ++a[1];
-const i2 = a[1]++;
-const j = (a[1] += 2);
 const k = a[1];
 const l = a[1] * 2;
 const m = a["1"];
@@ -25,4 +18,4 @@ function demo() {
   return a[0];
 }
 
-console.log(b, c, d, e, f, g(), h, i, i2, j, k, l, m, n, demo());
+console.log(b, c, d, e, f, g(), h, k, l, m, n, demo());

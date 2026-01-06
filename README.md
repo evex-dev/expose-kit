@@ -105,7 +105,7 @@ With this alone:
 ### 3. Apply transforms step by step
 
 After `safe-scope`, combine common techniques like:
-- `expand-array` and more
+- `expand-array`, `expand-object` and more
 - legacy obfuscator-specific commands
 
 After **each step**, run `parsable` again.
@@ -199,6 +199,33 @@ Args:
 
 Notes:
 - Each replacement is validated by reparsing; invalid replacements (e.g. `++a[0]` or `a[0]++`) are skipped.-
+
+---
+
+### `expose expand-object`
+
+Expand object property access for primitive values.
+```js
+const obj = { a: 1, b: 2 };
+// before
+console.log(obj.a, obj["b"]);
+// after
+console.log(1, 2);
+```
+Example is [here](https://github.com/evex-dev/expose-kit/tree/main/commands/expand-object/mocks).
+
+```bash
+expose expand-object path/to/file.js --target objectName --output path/to/file.expand-object.js
+```
+
+Args:
+- `--target <name>`  
+  Target object variable name
+- `--o, --output <file>`  
+  Output file path  
+
+Notes:
+- Each replacement is validated by reparsing; invalid replacements are skipped.
 
 ---
 
