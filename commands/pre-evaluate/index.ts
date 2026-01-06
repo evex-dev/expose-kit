@@ -29,7 +29,9 @@ type EvalState = {
 	bindingStack: Set<Binding>;
 };
 
-const isSupportedNumberOperator = (operator: t.BinaryExpression["operator"]) => {
+const isSupportedNumberOperator = (
+	operator: t.BinaryExpression["operator"],
+) => {
 	return (
 		operator === "-" ||
 		operator === "*" ||

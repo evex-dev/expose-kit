@@ -6,6 +6,7 @@ import parsable from "@/commands/parsable";
 import safeScope from "@/commands/safe-scope";
 import expandArray from "@/commands/expand-array";
 import preEvaluate from "@/commands/pre-evaluate";
+import removeUnused from "@/commands/remove-unused";
 import { showCredit } from "@/utils/cli/showCredit";
 import { readFileSync } from "node:fs";
 
@@ -29,7 +30,7 @@ program
 		"display version number",
 	);
 
-const commands = [parsable, safeScope, expandArray, preEvaluate];
+const commands = [parsable, safeScope, expandArray, preEvaluate, removeUnused];
 
 for (const command of commands) {
 	command(program);

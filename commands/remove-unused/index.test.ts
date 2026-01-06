@@ -2,14 +2,14 @@ import { Command } from "commander";
 import { describe, it, expect, vi, beforeEach, afterEach } from "bun:test";
 import { join } from "node:path";
 import { readFileSync } from "node:fs";
-import expandArray from ".";
+import removeUnused from ".";
 import { createSandbox } from "@/utils/evaluation/createSandbox";
 
 const sampleMockFileAbsolutePath = join(__dirname, "mocks", "sample.js");
-const sampleExpandArrayAbsolutePath = join(
+const sampleRemoveUnusedAbsolutePath = join(
 	__dirname,
 	"mocks",
-	"sample.expand-array.js",
+	"sample.remove-unused.js",
 );
 
 const runScript = (filePath: string) => {
@@ -41,7 +41,7 @@ const runScript = (filePath: string) => {
 	}
 };
 
-describe("Expand Array Command", () => {
+describe("Remove Unused Command", () => {
 	let program: Command;
 
 	beforeEach(() => {
@@ -53,23 +53,42 @@ describe("Expand Array Command", () => {
 		vi.restoreAllMocks();
 	});
 
-	it("Should keep runtime behavior after transformation", async () => {
-		expandArray(program);
+	it("Should remove unused declarations", async () => {
+		removeUnused(program);
 
 		await program.parseAsync([
 			"_",
 			"_",
-			"expand-array",
+			"remove-unused",
 			sampleMockFileAbsolutePath,
-			"--target",
-			"a",
 			"--output",
-			sampleExpandArrayAbsolutePath,
+			sampleRemoveUnusedAbsolutePath,
+			"--unlimited",
+		]);
+
+		const output = readFileSync(sampleRemoveUnusedAbsolutePath, "utf8");
+
+		expect(output).not.toInclude("unusedVar");
+		expect(output).not.toInclude("anotherUnused");
+		expect(output).not.toInclude("alsoUnused");
+		expect(output).toInclude("console.log(keepValue, keepSum, helper());");
+	});
+
+	it("Should keep runtime behavior after transformation", async () => {
+		removeUnused(program);
+
+		await program.parseAsync([
+			"_",
+			"_",
+			"remove-unused",
+			sampleMockFileAbsolutePath,
+			"--output",
+			sampleRemoveUnusedAbsolutePath,
 			"--unlimited",
 		]);
 
 		const originalResult = runScript(sampleMockFileAbsolutePath);
-		const transformedResult = runScript(sampleExpandArrayAbsolutePath);
+		const transformedResult = runScript(sampleRemoveUnusedAbsolutePath);
 
 		expect(originalResult.exitCode).toBe(0);
 		expect(transformedResult.exitCode).toBe(0);

@@ -196,13 +196,33 @@ Args:
   Target array variable name
 - `--o, --output <file>`  
   Output file path  
-  - No extension → `file.expand-array.js`
-  - With extension → `file.expand-array.<ext>`
 
 Notes:
 - Each replacement is validated by reparsing; invalid replacements (e.g. `++a[0]` or `a[0]++`) are skipped.-
 
 ---
+
+### `expose remove-unused`
+
+Remove unused variabless.
+```js
+// before
+var a = 0, b = 1;
+console.log(a);
+// after
+var a = 0;
+console.log(a);
+```
+Example is [here](https://github.com/evex-dev/expose-kit/tree/main/commands/remove-unused/mocks).
+
+```bash
+expose remove-unused path/to/file.js --output path/to/file.remove-unused.js
+```
+
+Args:
+- `--o, --output <file>`  
+  Output file path  
+
 
 ## Community & Support
 

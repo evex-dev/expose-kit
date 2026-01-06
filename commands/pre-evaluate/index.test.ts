@@ -2,8 +2,8 @@ import { Command } from "commander";
 import { describe, it, expect, vi, beforeEach, afterEach } from "bun:test";
 import { join } from "node:path";
 import { readFileSync } from "node:fs";
-import vm from "node:vm";
 import preEvaluate from ".";
+import { createSandbox } from "@/utils/evaluation/createSandbox";
 
 const sampleMockFileAbsolutePath = join(__dirname, "mocks", "sample.js");
 const samplePreEvaluateAbsolutePath = join(
@@ -16,7 +16,7 @@ const runScript = (filePath: string) => {
 	const code = readFileSync(filePath, "utf8");
 	const logSpy = vi.fn();
 	const errorSpy = vi.fn();
-	const context = vm.createContext({
+	const sandbox = createSandbox({
 		console: {
 			log: logSpy,
 			error: errorSpy,
@@ -25,7 +25,7 @@ const runScript = (filePath: string) => {
 	});
 
 	try {
-		vm.runInContext(code, context, { filename: filePath });
+		sandbox(code, { filename: filePath });
 		return {
 			exitCode: 0,
 			logCalls: logSpy.mock.calls,

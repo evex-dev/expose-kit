@@ -22,18 +22,6 @@ const createDefaultOutputPath = (inputPath: string) => {
 	return join(dirname(inputPath), `${base}.expand-array${ext}`);
 };
 
-const isPrimitiveValue = (node: t.Expression) => {
-	if (t.isNumericLiteral(node)) return true;
-	if (t.isStringLiteral(node)) return true;
-	if (t.isBooleanLiteral(node)) return true;
-	if (t.isNullLiteral(node)) return true;
-	if (t.isIdentifier(node, { name: "undefined" })) return true;
-	if (t.isUnaryExpression(node, { operator: "-" })) {
-		return t.isNumericLiteral(node.argument);
-	}
-	return false;
-};
-
 const isPrimitiveArray = (arrayNode: t.ArrayExpression) => {
 	return arrayNode.elements.every((element) => {
 		if (!element || t.isSpreadElement(element)) {
@@ -97,7 +85,7 @@ const collectMutatedIndexes = (ast: t.File, targetName: string) => {
 				(parent.isForOfStatement() && parent.get("left") === path);
 
 			if (!isMutationTarget) return;
-            if (!t.isExpression(path.node.property)) return;
+			if (!t.isExpression(path.node.property)) return;
 
 			const index = getIndexFromProperty(path.node.property);
 			if (index === null) {
@@ -114,7 +102,7 @@ const collectMutatedIndexes = (ast: t.File, targetName: string) => {
 type ArrayInfo = {
 	binding: Binding | null;
 	arrayNode: t.ArrayExpression;
-    hasRiskOfSideEffects?: boolean;
+	hasRiskOfSideEffects?: boolean;
 };
 
 const findTargetArray = (ast: t.File, targetName: string): ArrayInfo | null => {
@@ -141,9 +129,9 @@ const findTargetArray = (ast: t.File, targetName: string): ArrayInfo | null => {
 			};
 		},
 	});
-	
+
 	if (!found) return null;
-	
+
 	let hasRiskOfSideEffects = false;
 	patchDefault(traverse)(ast, {
 		Identifier(path) {
@@ -152,14 +140,15 @@ const findTargetArray = (ast: t.File, targetName: string): ArrayInfo | null => {
 			const parent = path.parentPath;
 			if (!parent) return;
 			if (parent.isVariableDeclarator() && parent.get("id") === path) return;
-			if (parent.isAssignmentExpression() && parent.get("left") === path) return;
-			
+			if (parent.isAssignmentExpression() && parent.get("left") === path)
+				return;
+
 			if (parent.isMemberExpression() && parent.get("object") === path) return;
-			
+
 			hasRiskOfSideEffects = true;
 		},
 	});
-	
+
 	const result = found as ArrayInfo;
 	result.hasRiskOfSideEffects = hasRiskOfSideEffects;
 	return result;
@@ -178,10 +167,12 @@ const expandArrayAccess = async (
 	}
 
 	if (targetArray.hasRiskOfSideEffects) {
-        const continueAnswer = await createPrompt("The target array has risk of side effects, do you want to continue? (y/n)");
-        if (continueAnswer !== "y") {
-            throw new Error("User cancelled");
-        }
+		const continueAnswer = await createPrompt(
+			"The target array has risk of side effects, do you want to continue? (y/n)",
+		);
+		if (continueAnswer !== "y") {
+			throw new Error("User cancelled");
+		}
 	}
 
 	const candidates: Array<{
