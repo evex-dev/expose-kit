@@ -28,7 +28,9 @@ export type ProxyFunctionExpression = t.Function & {
 	params: t.Identifier[];
 	body:
 		| (t.BlockStatement & {
-				body: { [0]: t.ReturnStatement & { argument: t.Expression | undefined } };
+				body: {
+					0: t.ReturnStatement & { argument: t.Expression | undefined };
+				};
 		  })
 		| t.Expression;
 };
@@ -52,13 +54,17 @@ const isProxyFunctionExpression = (
 };
 
 const isProxyValue = (node: t.Node): boolean => {
-	if (t.isFunction(node) || t.isBlockStatement(node) || t.isSequenceExpression(node)) {
+	if (
+		t.isFunction(node) ||
+		t.isBlockStatement(node) ||
+		t.isSequenceExpression(node)
+	) {
 		return false;
 	}
 	let isValid = true;
 
 	walk(node, {
-		["SequenceExpression|BlockStatement|Function|AssignmentExpression"](path) {
+		"SequenceExpression|BlockStatement|Function|AssignmentExpression"(path) {
 			isValid = false;
 			path.stop();
 		},
@@ -133,7 +139,11 @@ class ProxyFunctionVariable extends ProxyFunction {
 	}
 
 	public replaceCall(path: NodePath): boolean {
-		if (!path.parentPath || !path.parentPath.isCallExpression() || path.key !== "callee") {
+		if (
+			!path.parentPath ||
+			!path.parentPath.isCallExpression() ||
+			path.key !== "callee"
+		) {
 			return false;
 		}
 		const argumentNodes = path.parentPath.node.arguments;

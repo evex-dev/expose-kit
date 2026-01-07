@@ -188,7 +188,8 @@ const removeReassign = (code: string, filename: string) => {
 			const initPath = path.get("init");
 			if (
 				!initPath ||
-				(!initPath.isFunctionExpression() && !initPath.isArrowFunctionExpression())
+				(!initPath.isFunctionExpression() &&
+					!initPath.isArrowFunctionExpression())
 			) {
 				return;
 			}
@@ -310,8 +311,11 @@ export default createCommand((program) => {
 							const loader = loading("Removing reassign aliases...").start();
 
 							try {
-								const { code: output, aliasReplacedCount, wrapperReplacedCount } =
-									removeReassign(fileContent, filename);
+								const {
+									code: output,
+									aliasReplacedCount,
+									wrapperReplacedCount,
+								} = removeReassign(fileContent, filename);
 								writeFileSync(outputPath, output, "utf8");
 								loader.succeed(
 									`Saved remove-reassign file to: ${outputPath} (${

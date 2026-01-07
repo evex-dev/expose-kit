@@ -24,7 +24,9 @@ const createDefaultOutputPath = (inputPath: string) => {
 
 type EmptyObjectExpression = t.ObjectExpression & { properties: [] };
 
-const isEmptyObjectExpression = (node: t.Node): node is EmptyObjectExpression => {
+const isEmptyObjectExpression = (
+	node: t.Node,
+): node is EmptyObjectExpression => {
 	return t.isObjectExpression(node) && node.properties.length === 0;
 };
 
@@ -49,7 +51,7 @@ const hasSelfReference = (
 	try {
 		const statementContainerPath = statementPath.parentPath?.get(
 			`${statementPath.parentKey}.${arrayIndex}`,
-		) as NodePath;
+		) as unknown as NodePath;
 		let detected = false;
 
 		patchDefault(traverse)(
@@ -103,9 +105,12 @@ const packObjectProperties = (code: string, filename: string) => {
 				return;
 			}
 
-			const statements = (statementPath.parentPath.node as any)[
-				statementPath.parentKey
-			] as t.Statement[];
+			const statements = (
+				statementPath.parentPath.node as unknown as Record<
+					string,
+					t.Statement[] | undefined
+				>
+			)[statementPath.parentKey] as t.Statement[];
 			let localRemoved = 0;
 			let localPacked = 0;
 
@@ -156,7 +161,9 @@ const packObjectProperties = (code: string, filename: string) => {
 							!t.isNumericLiteral(key) &&
 							!t.isIdentifier(key);
 
-						if (hasSelfReference(assignment.right, statementPath, i, binding, log)) {
+						if (
+							hasSelfReference(assignment.right, statementPath, i, binding, log)
+						) {
 							break;
 						}
 
@@ -233,8 +240,11 @@ export default createCommand((program) => {
 							const loader = loading("Packing object properties...").start();
 
 							try {
-								const { code: output, packedCount, removedStatements } =
-									packObjectProperties(fileContent, filename);
+								const {
+									code: output,
+									packedCount,
+									removedStatements,
+								} = packObjectProperties(fileContent, filename);
 								writeFileSync(outputPath, output, "utf8");
 								loader.succeed(
 									`Saved object-packer file to: ${outputPath} (${

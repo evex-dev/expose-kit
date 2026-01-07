@@ -52,7 +52,10 @@ const getPropertyKeyFromMemberExpression = (
 	if (t.isNumericLiteral(node.property)) {
 		return String(node.property.value);
 	}
-	if (t.isTemplateLiteral(node.property) && node.property.expressions.length === 0) {
+	if (
+		t.isTemplateLiteral(node.property) &&
+		node.property.expressions.length === 0
+	) {
 		return node.property.quasis[0]?.value.cooked ?? null;
 	}
 	return null;
@@ -135,7 +138,10 @@ const getPropertyMap = (
 	return map;
 };
 
-const findTargetObject = (ast: t.File, targetName: string): ObjectInfo | null => {
+const findTargetObject = (
+	ast: t.File,
+	targetName: string,
+): ObjectInfo | null => {
 	let found: ObjectInfo | null = null;
 
 	patchDefault(traverse)(ast, {
@@ -328,11 +334,8 @@ export default createCommand((program) => {
 							const loader = loading("Expanding object access...").start();
 
 							try {
-								const { code: output, replacedCount } = await expandObjectAccess(
-									fileContent,
-									filename,
-									targetName,
-								);
+								const { code: output, replacedCount } =
+									await expandObjectAccess(fileContent, filename, targetName);
 								writeFileSync(outputPath, output, "utf8");
 								loader.succeed(
 									`Saved expand-object file to: ${outputPath} (${

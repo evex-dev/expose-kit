@@ -1,2 +1,3 @@
-bun run format:fix
-bun run lint:fix
+#!/bin/sh
+bun run format
+bun run lint
