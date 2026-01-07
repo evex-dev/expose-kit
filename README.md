@@ -346,6 +346,33 @@ Notes:
 
 ---
 
+### `expose sequence-split`
+
+Split sequence expressions into statements.
+```js
+// before
+a, b, c;
+// after
+a;
+b;
+c;
+```
+Example is [here](https://github.com/evex-dev/expose-kit/tree/main/commands/sequence-split/mocks).
+
+```bash
+expose sequence-split path/to/file.js --output path/to/file.sequence-split.js
+```
+
+Args:
+- `--o, --output <file>`  
+  Output file path  
+
+Notes:
+- Splits safe sequence expressions into standalone statements.
+- Also normalizes single-statement control flow blocks.
+
+---
+
 ### `expose remove-unused`
 
 Remove unused variabless.
