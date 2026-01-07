@@ -32,7 +32,7 @@ if (notifier.update) {
 	console.log(`${chalk.yellow("Update available:")} ${notifier.update.latest}`);
 }
 
-console.log(showCredit(pkg.version));
+console.log(showCredit(pkg.version,));
 console.log();
 
 const program = new Command();
