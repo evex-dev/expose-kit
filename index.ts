@@ -12,6 +12,7 @@ import removeUpdater from "@/commands/remove-updater";
 import removeReassign from "@/commands/remove-reassign";
 import removeUnused from "@/commands/remove-unused";
 import removeDeadcode from "@/commands/remove-deadcode";
+import removeAntiTamper from "@/commands/remove-anti-tamper";
 import controlFlowPacker from "@/commands/control-flow-packer";
 import fnInliner from "@/commands/fn-inliner";
 import sequenceSplit from "@/commands/sequence-split";
@@ -54,6 +55,7 @@ const commands = [
 	removeUpdater,
 	removeReassign,
 	removeDeadcode,
+	removeAntiTamper,
 	controlFlowPacker,
 	fnInliner,
 	removeUnused,
