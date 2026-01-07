@@ -63,6 +63,6 @@ const calmGradienrain = (text: string) => {
 		.join("");
 };
 
-export const showCredit = (VERSION: string, update: UpdateInfo | null) => beautify`
-${calmGradienrain(`Expose Kit v${VERSION}`)} ${update ? `(Update available: v${update.latest})` : ""}
+export const showCredit = (VERSION: string, update: UpdateInfo | undefined) => beautify`
+${calmGradienrain(`Expose Kit v${VERSION}`)} ${update && update.latest !== VERSION? `(Update available: v${update.latest})` : ""}
 `;
