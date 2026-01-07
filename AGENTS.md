@@ -73,7 +73,13 @@ example : [./utils/common/createPrompt.ts]
 /commands/[command name]/mocks/* : example files
     example: [./commands/expand-object/mocks/sample.js], [./commands/expand-object/mocks/sample-expand-object.js]
 
-Check [README](./README.md)
+### Scripts
+Check [package.json](./package.json)
+Do not run build and release.
 
+---
 ## 4) After implement
 Add docs to [README.md](README.md)
+
+---
+Check [README](./README.md)

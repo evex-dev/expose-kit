@@ -321,6 +321,31 @@ Notes:
 
 ---
 
+### `expose fn-inliner`
+
+Inline proxy function calls into expressions.
+```js
+const add = (a, b) => a + b;
+const sum = add(1, 2);
+// after
+const sum = 1 + 2;
+```
+Example is [here](https://github.com/evex-dev/expose-kit/tree/main/commands/fn-inliner/mocks).
+
+```bash
+expose fn-inliner path/to/file.js --output path/to/file.fn-inliner.js
+```
+
+Args:
+- `--o, --output <file>`  
+  Output file path  
+
+Notes:
+- Only inlines functions that return a single expression.
+- Skips return expressions with assignments, functions, blocks, or sequences.
+
+---
+
 ### `expose remove-unused`
 
 Remove unused variabless.

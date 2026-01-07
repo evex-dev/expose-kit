@@ -11,6 +11,7 @@ import preEvaluate from "@/commands/pre-evaluate";
 import removeUpdater from "@/commands/remove-updater";
 import removeReassign from "@/commands/remove-reassign";
 import removeUnused from "@/commands/remove-unused";
+import fnInliner from "@/commands/fn-inliner";
 import { showCredit } from "@/utils/cli/showCredit";
 import { readFileSync } from "node:fs";
 
@@ -43,6 +44,7 @@ const commands = [
 	preEvaluate,
 	removeUpdater,
 	removeReassign,
+	fnInliner,
 	removeUnused,
 ];
 

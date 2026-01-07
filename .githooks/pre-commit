@@ -1,0 +1,2 @@
+bun run format:fix
+bun run lint:fix
