@@ -11,6 +11,7 @@ import preEvaluate from "@/commands/pre-evaluate";
 import removeUpdater from "@/commands/remove-updater";
 import removeReassign from "@/commands/remove-reassign";
 import removeUnused from "@/commands/remove-unused";
+import removeDeadcode from "@/commands/remove-deadcode";
 import fnInliner from "@/commands/fn-inliner";
 import sequenceSplit from "@/commands/sequence-split";
 import { showCredit } from "@/utils/cli/showCredit";
@@ -25,7 +26,7 @@ const pkg = JSON.parse(readFileSync(join(__dirname, "package.json"), "utf8"));
 
 const notifier = updateNotifier({
 	pkg,
-	updateCheckInterval: 0
+	updateCheckInterval: 1000 * 60 * 60 * 24 * 3 // 3 days
 });
 
 console.log(showCredit(pkg.version, notifier.update));
@@ -51,6 +52,7 @@ const commands = [
 	preEvaluate,
 	removeUpdater,
 	removeReassign,
+	removeDeadcode,
 	fnInliner,
 	removeUnused,
 	sequenceSplit,

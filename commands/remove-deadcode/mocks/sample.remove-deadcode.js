@@ -1,0 +1,15 @@
+const cond = true;
+let value = 0;
+value += 1;
+value += 3;
+value += 5;
+value += 6;
+value += 7;
+const a = "yes";
+const b = "yes";
+const c = !!cond;
+const d = !cond;
+const e = (cond, true);
+const f = (cond, false);
+const g = 1;
+console.log(value, a, b, c, d, e, f, g);

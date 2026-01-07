@@ -110,6 +110,8 @@ After `safe-scope`, combine common techniques like:
 After **each step**, run `parsable` and `remove-unused` again.   
     (even if it's not frequent, we might overlook something broken)
 
+The more you do it, the clearer it becomes.
+
 Expose Kit will also clearly indicate whether a **diff** exists, making inspection easy.
 
 Repeat this process, and the original code will gradually reveal itself.
@@ -321,6 +323,38 @@ Notes:
 - Only inlines const/immutable alias chains.
 - Skips object shorthand replacements and shadowed bindings.
 - Wrapper inlining is limited to single-return passthroughs.
+
+---
+
+### `expose remove-deadcode`
+
+Remove unreachable branches and simplify conditional expressions.
+```js
+if (true) {
+  a();
+} else {
+  b();
+}
+// after
+a();
+
+const x = cond ? true : false;
+// after
+const x = !!cond;
+```
+Example is [here](https://github.com/evex-dev/expose-kit/tree/main/commands/remove-deadcode/mocks).
+
+```bash
+expose remove-deadcode path/to/file.js --output path/to/file.remove-deadcode.js
+```
+
+Args:
+- `--o, --output <file>`  
+  Output file path  
+
+Notes:
+- Only removes branches with literal/array/object tests.
+- Simplifies ternaries when both branches are booleans.
 
 ---
 
