@@ -258,6 +258,33 @@ Notes:
 
 ---
 
+### `expose remove-updater`
+
+Replace safe update expressions with += or -=.
+```js
+// before
+a++;
+--b;
+// after
+a += 1;
+b -= 1;
+```
+Example is [here](https://github.com/evex-dev/expose-kit/tree/main/commands/remove-updater/mocks).
+
+```bash
+expose remove-updater path/to/file.js --output path/to/file.remove-updater.js
+```
+
+Args:
+- `--o, --output <file>`  
+  Output file path  
+
+Notes:
+- Only replaces update expressions whose value is not used.
+- Safe for expression statements and for-loop update clauses.
+
+---
+
 ### `expose remove-unused`
 
 Remove unused variabless.

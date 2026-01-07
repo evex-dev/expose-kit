@@ -8,6 +8,7 @@ import expandArray from "@/commands/expand-array";
 import expandObject from "@/commands/expand-object";
 import objectPacker from "@/commands/object-packer";
 import preEvaluate from "@/commands/pre-evaluate";
+import removeUpdater from "@/commands/remove-updater";
 import removeUnused from "@/commands/remove-unused";
 import { showCredit } from "@/utils/cli/showCredit";
 import { readFileSync } from "node:fs";
@@ -39,6 +40,7 @@ const commands = [
 	expandObject,
 	objectPacker,
 	preEvaluate,
+	removeUpdater,
 	removeUnused,
 ];
 
