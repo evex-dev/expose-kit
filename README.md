@@ -263,6 +263,30 @@ Notes:
 
 ---
 
+### `expose key-simplify`
+
+Replace safe string literal property accesses (`obj["foo"]`) with dot-style access (`obj.foo`).
+```js
+const obj = { foo: 1, bar_baz: 2 };
+obj["foo"] = obj['bar'];
+console.log(obj["foo"], obj["bar_baz"]);
+```
+Example is [here](https://github.com/evex-dev/expose-kit/tree/main/commands/key-simplify/mocks).
+
+```bash
+expose key-simplify path/to/file.js --output path/to/file.key-simplify.js
+```
+
+Args:
+- `--o, --output <file>`  
+  Output file path  
+
+Notes:
+- Only rewrites computed keys that are plain identifiers.
+- Leaves invalid identifier keys untouched so the output stays parseable.
+
+---
+
 ### `expose remove-updater`
 
 Replace safe update expressions with += or -=.

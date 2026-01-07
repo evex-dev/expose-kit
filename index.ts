@@ -7,6 +7,7 @@ import safeScope from "@/commands/safe-scope";
 import expandArray from "@/commands/expand-array";
 import expandObject from "@/commands/expand-object";
 import objectPacker from "@/commands/object-packer";
+import keySimplify from "@/commands/key-simplify";
 import preEvaluate from "@/commands/pre-evaluate";
 import removeUpdater from "@/commands/remove-updater";
 import removeReassign from "@/commands/remove-reassign";
@@ -51,6 +52,7 @@ const commands = [
 	expandArray,
 	expandObject,
 	objectPacker,
+	keySimplify,
 	preEvaluate,
 	removeUpdater,
 	removeReassign,
