@@ -223,7 +223,7 @@ const getArrayReturnExpression = (
 				const declarator = first.declarations[0];
 				if (
 					!(
-						t.isIdentifier(declarator.id) &&
+						declarator && t.isIdentifier(declarator.id) &&
 						declarator.init &&
 						t.isArrayExpression(declarator.init)
 					)
