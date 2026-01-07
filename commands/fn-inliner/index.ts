@@ -57,13 +57,19 @@ const isProxyValue = (node: t.Node): boolean => {
 	if (
 		t.isFunction(node) ||
 		t.isBlockStatement(node) ||
-		t.isSequenceExpression(node)
+		t.isSequenceExpression(node) ||
+		t.isAssignmentExpression(node)
 	) {
 		return false;
 	}
 	let isValid = true;
 
-	walk(node, {
+	if (!t.isExpression(node)) {
+		return false;
+	}
+	const wrapper = t.file(t.program([t.expressionStatement(node)]));
+
+	walk(wrapper, {
 		"SequenceExpression|BlockStatement|Function|AssignmentExpression"(path) {
 			isValid = false;
 			path.stop();
@@ -106,11 +112,35 @@ class ProxyFunction {
 		);
 		const pathsToReplace: Array<[NodePath, t.Expression]> = [];
 
-		walk(expression, {
+		const shouldSkipIdentifier = (path: NodePath<t.Identifier>) => {
+			const parent = path.parentPath;
+			if (!parent) return false;
+			if (parent.isMemberExpression() || parent.isOptionalMemberExpression()) {
+				if (path.key === "property" && !parent.node.computed) {
+					return true;
+				}
+			}
+			if (parent.isObjectProperty()) {
+				if (parent.node.shorthand) return true;
+				if (parent.get("key") === path && !parent.node.computed) {
+					return true;
+				}
+			}
+			if (parent.isObjectMethod()) {
+				if (parent.get("key") === path && !parent.node.computed) {
+					return true;
+				}
+			}
+			return false;
+		};
+
+		const wrapper = t.file(t.program([t.expressionStatement(expression)]));
+
+		walk(wrapper, {
 			enter(path) {
 				if (
 					t.isIdentifier(path.node) &&
-					!(path.parentPath?.isMemberExpression() && path.key === "property") &&
+					!shouldSkipIdentifier(path as NodePath<t.Identifier>) &&
 					paramMap.has(path.node.name)
 				) {
 					const replacement = paramMap.get(path.node.name) as t.Expression;

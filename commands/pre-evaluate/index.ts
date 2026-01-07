@@ -23,6 +23,12 @@ const createDefaultOutputPath = (inputPath: string) => {
 };
 
 type LiteralValue = number | string;
+type ArrayReturnInfo = {
+	binding: Binding;
+	arrayNode: t.ArrayExpression;
+	replacementName: string;
+	used: boolean;
+};
 
 type EvalState = {
 	bindingValues: Map<Binding, LiteralValue>;
@@ -193,6 +199,143 @@ const shouldSkipReferencedIdentifier = (path: NodePath<t.Identifier>) => {
 	return false;
 };
 
+const getArrayReturnExpression = (
+	node:
+		| t.FunctionDeclaration
+		| t.FunctionExpression
+		| t.ArrowFunctionExpression,
+): t.ArrayExpression | null => {
+	if (node.params.length !== 0) return null;
+	if (t.isBlockStatement(node.body)) {
+		if (node.body.body.length !== 1) return null;
+		const statement = node.body.body[0];
+		if (!t.isReturnStatement(statement) || !statement.argument) return null;
+		return t.isArrayExpression(statement.argument) ? statement.argument : null;
+	}
+	return t.isArrayExpression(node.body) ? node.body : null;
+};
+
+const isSafeArrayElement = (node: t.Expression | null): boolean => {
+	if (!node) return true;
+	if (
+		t.isNumericLiteral(node) ||
+		t.isStringLiteral(node) ||
+		t.isBooleanLiteral(node) ||
+		t.isNullLiteral(node)
+	) {
+		return true;
+	}
+	if (
+		t.isUnaryExpression(node) &&
+		(node.operator === "-" || node.operator === "+") &&
+		t.isNumericLiteral(node.argument)
+	) {
+		return true;
+	}
+	if (t.isArrayExpression(node)) {
+		return node.elements.every((element) => {
+			if (element === null) return true;
+			if (t.isSpreadElement(element)) return false;
+			return isSafeArrayElement(element);
+		});
+	}
+	return false;
+};
+
+const isSafeArrayExpression = (node: t.ArrayExpression): boolean => {
+	return node.elements.every((element) => {
+		if (element === null) return true;
+		if (t.isSpreadElement(element)) return false;
+		return isSafeArrayElement(element);
+	});
+};
+
+const collectArrayReturnFunctions = (ast: t.File): ArrayReturnInfo[] => {
+	const results: ArrayReturnInfo[] = [];
+	let counter = 0;
+
+	patchDefault(traverse)(ast, {
+		FunctionDeclaration(path) {
+			if (!path.node.id) return;
+			const arrayExpression = getArrayReturnExpression(path.node);
+			if (!arrayExpression || !isSafeArrayExpression(arrayExpression)) return;
+			const binding = path.scope.getBinding(path.node.id.name);
+			if (!binding) return;
+			const programScope = path.scope.getProgramParent();
+			let replacementName = `${path.node.id.name}_${counter}`;
+			counter += 1;
+			while (programScope.hasBinding(replacementName)) {
+				replacementName = `${path.node.id.name}_${counter}`;
+				counter += 1;
+			}
+			results.push({
+				binding,
+				arrayNode: arrayExpression,
+				replacementName,
+				used: false,
+			});
+		},
+		VariableDeclarator(path) {
+			if (!t.isIdentifier(path.node.id)) return;
+			const init = path.node.init;
+			if (
+				!init ||
+				(!t.isFunctionExpression(init) && !t.isArrowFunctionExpression(init))
+			) {
+				return;
+			}
+			const arrayExpression = getArrayReturnExpression(init);
+			if (!arrayExpression || !isSafeArrayExpression(arrayExpression)) return;
+			const binding = path.scope.getBinding(path.node.id.name);
+			if (!binding || !binding.constant || binding.kind !== "const") return;
+			const programScope = path.scope.getProgramParent();
+			let replacementName = `${path.node.id.name}_${counter}`;
+			counter += 1;
+			while (programScope.hasBinding(replacementName)) {
+				replacementName = `${path.node.id.name}_${counter}`;
+				counter += 1;
+			}
+			results.push({
+				binding,
+				arrayNode: arrayExpression,
+				replacementName,
+				used: false,
+			});
+		},
+	});
+
+	return results;
+};
+
+const insertArrayReturnDeclarations = (
+	ast: t.File,
+	functions: ArrayReturnInfo[],
+) => {
+	const declarations = functions
+		.filter((info) => info.used)
+		.map((info) =>
+			t.variableDeclaration("var", [
+				t.variableDeclarator(
+					t.identifier(info.replacementName),
+					t.cloneNode(info.arrayNode, true),
+				),
+			]),
+		);
+
+	if (declarations.length === 0) return;
+
+	const body = ast.program.body;
+	let insertIndex = 0;
+	while (
+		insertIndex < body.length &&
+		t.isExpressionStatement(body[insertIndex]) &&
+		"directive" in (body[insertIndex] || {})
+	) {
+		insertIndex += 1;
+	}
+	body.splice(insertIndex, 0, ...declarations);
+};
+
 const preEvaluate = (code: string, filename: string) => {
 	const ast = parse(code, createParseOptions(filename));
 	const state: EvalState = {
@@ -200,8 +343,24 @@ const preEvaluate = (code: string, filename: string) => {
 		bindingStack: new Set(),
 	};
 	let replacedCount = 0;
+	const arrayReturnFunctions = collectArrayReturnFunctions(ast);
+	const arrayReturnMap = new Map<Binding, ArrayReturnInfo>();
+	for (const info of arrayReturnFunctions) {
+		arrayReturnMap.set(info.binding, info);
+	}
 
 	patchDefault(traverse)(ast, {
+		CallExpression(path) {
+			if (!t.isIdentifier(path.node.callee)) return;
+			if (path.node.arguments.length !== 0) return;
+			const binding = path.scope.getBinding(path.node.callee.name);
+			if (!binding) return;
+			const info = arrayReturnMap.get(binding);
+			if (!info) return;
+			path.replaceWith(t.identifier(info.replacementName));
+			info.used = true;
+			replacedCount += 1;
+		},
 		ReferencedIdentifier(path) {
 			if (shouldSkipReferencedIdentifier(path as NodePath<t.Identifier>)) {
 				return;
@@ -252,6 +411,8 @@ const preEvaluate = (code: string, filename: string) => {
 			},
 		},
 	});
+
+	insertArrayReturnDeclarations(ast, arrayReturnFunctions);
 
 	return {
 		code: patchDefault(generate)(ast).code,

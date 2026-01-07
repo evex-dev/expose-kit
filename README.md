@@ -106,9 +106,9 @@ With this alone:
 
 After `safe-scope`, combine common techniques like:
 - `expand-array`, `expand-object` and more
-- legacy obfuscator-specific commands
 
-After **each step**, run `parsable` again.
+After **each step**, run `parsable` and `remove-unused` again.   
+    (even if it's not frequent, we might overlook something broken)
 
 Expose Kit will also clearly indicate whether a **diff** exists, making inspection easy.
 
@@ -172,6 +172,9 @@ Args:
   Output file path  
   - No extension → `file.pre-evaluate.js`
   - With extension → `file.pre-evaluate.<ext>`
+
+Notes:
+- Inlines zero-arg functions that return safe array literals by hoisting them to a var.
 
 ---
 
