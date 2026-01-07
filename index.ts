@@ -15,12 +15,22 @@ import fnInliner from "@/commands/fn-inliner";
 import sequenceSplit from "@/commands/sequence-split";
 import { showCredit } from "@/utils/cli/showCredit";
 import { readFileSync } from "node:fs";
+import updateNotifier from 'update-notifier';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Read version from package.json
 const pkg = JSON.parse(readFileSync(join(__dirname, "package.json"), "utf8"));
+
+const notifier = updateNotifier({
+	pkg,
+	updateCheckInterval: 0
+});
+
+if (notifier.update) {
+	console.log(`${chalk.yellow("Update available:")} ${notifier.update.latest}`);
+}
 
 console.log(showCredit(pkg.version));
 console.log();
