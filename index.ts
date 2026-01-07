@@ -28,11 +28,7 @@ const notifier = updateNotifier({
 	updateCheckInterval: 0
 });
 
-if (notifier.update) {
-	console.log(`${chalk.yellow("Update available:")} ${notifier.update.latest}`);
-}
-
-console.log(showCredit(pkg.version,));
+console.log(showCredit(pkg.version, notifier.update));
 console.log();
 
 const program = new Command();

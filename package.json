@@ -45,6 +45,7 @@
 		"@types/update-notifier": "^6.0.8",
 		"chalk": "^5.6.2",
 		"commander": "^14.0.2",
+		"expose-kit": "^0.10.2",
 		"loading-cli": "^1.1.2",
 		"update-notifier": "^7.3.1"
 	},

@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import type { UpdateInfo } from "update-notifier";
 
 // `\naaa\n` => `aaa`
 const beautify = <T>(strings: TemplateStringsArray, ...values: T[]) => {
@@ -62,6 +63,6 @@ const calmGradienrain = (text: string) => {
 		.join("");
 };
 
-export const showCredit = (VERSION: string) => beautify`
-${calmGradienrain(`Expose Kit v${VERSION}`)}
+export const showCredit = (VERSION: string, update: UpdateInfo | null) => beautify`
+${calmGradienrain(`Expose Kit v${VERSION}`)} ${update ? `(Update available: v${update.latest})` : ""}
 `;
