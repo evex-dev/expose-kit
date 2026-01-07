@@ -10,7 +10,8 @@ const h = 6;
 const i = "x";
 const j = -2;
 function getArray() {
-  return [0, 1, 2];
+  const p = [0, 1, 2];
+  return p;
 }
 const arr = getArray_0;
 const obj = {

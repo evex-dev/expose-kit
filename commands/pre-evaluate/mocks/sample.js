@@ -9,7 +9,8 @@ const h = (a + b) * 2;
 const i = ("x");
 const j = ~1;
 function getArray() {
-  return [0, 1, 2];
+  const p = [0, 1, 2];
+  return p;
 }
 const arr = getArray();
 const obj = { a };

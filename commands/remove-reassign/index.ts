@@ -196,7 +196,8 @@ const removeReassign = (code: string, filename: string) => {
 			const binding = path.scope.getBinding(path.node.id.name);
 			if (!binding || !binding.constant) return;
 			const wrapper = getWrapperInfo(
-				initPath as NodePath<t.FunctionExpression | t.ArrowFunctionExpression>,
+				// TODO: fix this
+				initPath as unknown as NodePath<t.FunctionDeclaration>,
 				binding,
 			);
 			if (wrapper) wrappers.push(wrapper);
@@ -208,7 +209,7 @@ const removeReassign = (code: string, filename: string) => {
 
 	for (const alias of aliases) {
 		for (const referencePath of alias.aliasBinding.referencePaths) {
-			if (isShorthandObjectKey(referencePath)) continue;
+			if (isShorthandObjectKey(referencePath as NodePath<t.Identifier>)) continue;
 			const targetBinding = referencePath.scope.getBinding(alias.targetName);
 			if (targetBinding !== alias.targetBinding) continue;
 			referencePath.replaceWith(t.identifier(alias.targetName));

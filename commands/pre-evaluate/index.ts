@@ -206,11 +206,44 @@ const getArrayReturnExpression = (
 		| t.ArrowFunctionExpression,
 ): t.ArrayExpression | null => {
 	if (node.params.length !== 0) return null;
-	if (t.isBlockStatement(node.body)) {
-		if (node.body.body.length !== 1) return null;
-		const statement = node.body.body[0];
-		if (!t.isReturnStatement(statement) || !statement.argument) return null;
-		return t.isArrayExpression(statement.argument) ? statement.argument : null;
+	const body = node.body;
+	if (t.isBlockStatement(body)) {
+		const statements = body.body;
+		if (statements.length === 1) {
+			const statement = statements[0];
+			if (!t.isReturnStatement(statement) || !statement.argument) return null;
+			return t.isArrayExpression(statement.argument) ? statement.argument : null;
+		}
+		if (statements.length === 2) {
+			const [first, second] = statements;
+			const arrayExpression = (() => {
+				if (!t.isVariableDeclaration(first) || first.declarations.length !== 1) {
+					return null;
+				}
+				const declarator = first.declarations[0];
+				if (
+					!(
+						t.isIdentifier(declarator.id) &&
+						declarator.init &&
+						t.isArrayExpression(declarator.init)
+					)
+				) {
+					return null;
+				}
+				if (!t.isReturnStatement(second) || !second.argument) return null;
+				if (
+					!t.isIdentifier(second.argument) ||
+					second.argument.name !== declarator.id.name
+				) {
+					return null;
+				}
+				return declarator.init;
+			})();
+			if (arrayExpression) {
+				return arrayExpression;
+			}
+		}
+		return null;
 	}
 	return t.isArrayExpression(node.body) ? node.body : null;
 };
