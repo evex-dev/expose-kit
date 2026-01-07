@@ -285,6 +285,42 @@ Notes:
 
 ---
 
+### `expose remove-reassign`
+
+Inline safe alias assignments and wrapper calls.
+```js
+const a = 0;
+const b = a;
+const c = b;
+console.log(c); // => console.log(a);
+```
+```js
+function a(arg) {
+  return b(arg);
+}
+function c(arg) {
+  return d[arg];
+}
+a(0); // => b(0)
+c(0); // => d[0]
+```
+Example is [here](https://github.com/evex-dev/expose-kit/tree/main/commands/remove-reassign/mocks).
+
+```bash
+expose remove-reassign path/to/file.js --output path/to/file.remove-reassign.js
+```
+
+Args:
+- `--o, --output <file>`  
+  Output file path  
+
+Notes:
+- Only inlines const/immutable alias chains.
+- Skips object shorthand replacements and shadowed bindings.
+- Wrapper inlining is limited to single-return passthroughs.
+
+---
+
 ### `expose remove-unused`
 
 Remove unused variabless.
